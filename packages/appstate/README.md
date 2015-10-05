@@ -125,12 +125,12 @@ No, it's not. Session was not designed for this purpose. If you store complex ob
 
 This are some ideas to improve **AppState**. PRs are welcomed.
 
-[ ] **Redux-style:** restrict changes to Flux action like Redux does.
-[ ] **Hot Code push:** survive to hot code pushes.
-[ ] **Store offline:** so the next time the user comes back to your app everything is exactly as it was.
-[ ] **Store in the url:** some of the values only. Good if the users shares the url with somebody and your app should now some of the user state.
-[ ] **Time Machine:** undo/redo changes in development. Probably using [Constellation](https://atmospherejs.com/babrahams/constellation) for the UI. Pretty much like the Time Machine of Redux.
-[ ] **React support:** more than react support, maybe get rid of Blaze helpers if the app doesn't use Blaze.
+* [ ] **Redux-style:** restrict changes to Flux action like Redux does.
+* [ ] **Hot Code push:** survive to hot code pushes.
+* [ ] **Store offline:** so the next time the user comes back to your app everything is exactly as it was.
+* [ ] **Store in the url:** some of the values only. Good if the users shares the url with somebody and your app should now some of the user state.
+* [ ] **Time Machine:** undo/redo changes in development. Probably using [Constellation](https://atmospherejs.com/babrahams/constellation) for the UI. Pretty much like the Time Machine of Redux.
+* [ ] **React support:** more than react support, maybe get rid of Blaze helpers if the app doesn't use Blaze.
 
 Ideas welcomed as well. Open issues to discuss. ;)
 
