@@ -109,6 +109,14 @@ And of course, it can contain more data:
 Dispatcher.dispatch( { type: "SOMETHING_HAPPENED", usefulData: "some data" } );
 ```
 
+Alternatively, you can pass the `type` in the first parameter:
+
+```javascript
+Dispatcher.dispatch( "SOMETHING_HAPPENED" );
+// or
+Dispatcher.dispatch( "SOMETHING_HAPPENED", { usefulData: "some data" } );
+```
+
 ### Dispatcher.register():
 
 Register a callback. Normally used by the **Stores**.
@@ -127,6 +135,16 @@ Dispatcher.register(function(action){
 ```
 
 Using `switch` to check the `type` may not be the most elegant solution but it works and it's very flexible. It is what Facebook people or Redux users use.
+
+Alternatively you can pass the `type` as the first parameter:
+
+```javascript
+Dispatcher.register("SOMETHING_HAPPENED", function(action){
+  doSomething(action.usefulData);
+});
+```
+
+
 
 # Installing the Dispatcher
 
