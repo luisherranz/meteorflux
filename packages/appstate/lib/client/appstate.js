@@ -129,8 +129,6 @@ MeteorFlux.AppState = class AppState {
           // If they are not equal, the first thing to do it to mark this
           // keyPath as changed to trigger all the Tracker.autoruns.
           self._changeDep(keyPath);
-          console.log(self._keyPathToString(keyPath) +
-            ' =>', newObj[key]);
 
           // Check if it is an object
           if (Match.test(newObj[key], Object)) {
