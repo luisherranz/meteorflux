@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:dispatcher-helper',
-  version: '1.0.0',
+  version: '1.0.1',
   summary: 'A helper to dispatch Flux actions directly from Blaze.',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
