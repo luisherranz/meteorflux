@@ -7,7 +7,11 @@
 </template>
 
 <template name="stringTemplate">
-{{string}} inside a template.
+{{#if string}}{{string}} inside a template.{{/if}}
+</template>
+
+<template name="stringTemplate2">
+{{#if string2}}{{string2}} inside a template.{{/if}}
 </template>
 
 <template name="nestedStringTemplate">

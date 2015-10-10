@@ -1,6 +1,8 @@
 let beforeEach = () => {
   AppState = new MeteorFlux.AppState();
+  Blaze._globalHelpers = [];
 };
+
 
 Tinytest.add('MeteorFlux - AppState - Test internal _checkKeyPath function',
   function (test) {
@@ -236,10 +238,26 @@ Tinytest.add(
     Tracker.autorun(function(){
       text = AppState.get('string');
     });
+    test.equal(Blaze.toHTML(Template.stringTemplate), '');
     AppState.set('string', 'I am a string');
     Tracker.flush();
     test.equal(text, 'I am a string');
     test.equal(Blaze.toHTML(Template.stringTemplate),
+      'I am a string inside a template.'
+    );
+  }
+);
+
+Tinytest.add(
+  'MeteorFlux - AppState - Set and get strings reactively only in template',
+
+  function(test) {
+    beforeEach();
+    console.log('string: ', AppState.get('string2'));
+    test.equal(Blaze.toHTML(Template.stringTemplate2), '');
+    AppState.set('string2', 'I am a string');
+    Tracker.flush();
+    test.equal(Blaze.toHTML(Template.stringTemplate2),
       'I am a string inside a template.'
     );
   }

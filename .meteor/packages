@@ -21,6 +21,8 @@ insecure
 autopublish
 
 meteorflux:dispatcher
-meteorflux:dispatcher-blaze-helper
+meteorflux:dispatcher-helper
 meteorflux:appstate
 babrahams:constellation
+kadira:blaze-layout
+kadira:flow-router

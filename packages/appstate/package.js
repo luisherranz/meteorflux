@@ -8,7 +8,7 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2');
-  api.use('meteorflux:namespace');
+  api.use('meteorflux:namespace@1.0.0');
   api.imply('meteorflux:namespace');
   api.use('ecmascript');
   api.use('check');
@@ -27,7 +27,6 @@ Package.onTest(function(api) {
   api.use('blaze-html-templates');
   api.use('mongo');
   api.use('meteorflux:appstate', 'client');
-
   api.addFiles('tests/client/appstate-tests.js', 'client');
   api.addFiles('tests/client/appstate-tests.html', 'client');
 });
