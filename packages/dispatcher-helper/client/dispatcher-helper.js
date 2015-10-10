@@ -15,13 +15,11 @@ MeteorFlux.DispatcherHelper = class DispatcherHelper {
       if (Template.hasOwnProperty(t)) {
         var tmpl = Template[t];
         if (Blaze.isTemplate(tmpl)) {
-          if (tmpl.viewName !== "body") {
-            tmpl.events({
-              'click a[data-action-type]': self._dispatch,
-              'click button[data-action-type]': self._dispatch,
-              'submit form[data-action-type]': self._dispatch
-            });
-          }
+          tmpl.events({
+            'click a[data-action-type]': self._dispatch,
+            'click button[data-action-type]': self._dispatch,
+            'submit form[data-action-type]': self._dispatch
+          });
         }
       }
     }
