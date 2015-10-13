@@ -192,7 +192,7 @@ MeteorFlux.AppState = class AppState {
     self._registerHelper(keyPath[0]);
   }
 
-  // This public function gets a keyPath (string or array) and a new value and
+  // This public method gets a keyPath (string or array) and a new value and
   // stores it in the AppState object tree.
   set(keyPath, newValue) {
     let self = this;
@@ -205,7 +205,7 @@ MeteorFlux.AppState = class AppState {
     }
   }
 
-  // This public function gets a keyPath (string or array) and returns the
+  // This public method gets a keyPath (string or array) and returns the
   // correct value of the object tree. If a Tracker computation is currently
   // active it will add a dependency.
   get(keyPath) {
@@ -225,7 +225,22 @@ MeteorFlux.AppState = class AppState {
     }
 
     return value;
+  }
 
+  // This method is useful to modify a specific state depending on the
+  // dispatched Flux actions. Very similar to how Redux
+  // (http://rackt.github.io/redux/) works. Check the tests for an example.
+  modify(keyPath, func) {
+    let self = this;
+
+    var funcWithState = function(action) {
+      let state = self.get(keyPath);
+      self.set(keyPath, func(action, state));
+    };
+
+    funcWithState({ type: 'INITIALIZATING_MODIFY' });
+
+    Dispatcher.register(funcWithState);
   }
 };
 

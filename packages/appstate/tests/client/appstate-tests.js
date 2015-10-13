@@ -1,4 +1,5 @@
 let beforeEach = () => {
+  Dispatcher.reset();
   AppState = new MeteorFlux.AppState();
   Blaze._globalHelpers = [];
 };
@@ -753,5 +754,38 @@ Tinytest.add(
     beforeEach();
 
     test.throws(AppState.set.bind(AppState), 'Invalid keypath');
+  }
+);
+
+Tinytest.add(
+  'MeteorFlux - AppState -  Use modify to set a normal value.',
+  function(test) {
+    beforeEach();
+
+    AppState.modify('string', function(action, state = false) {
+      switch (action.type) {
+        case 'SOMETHING_HAPPENED':
+          state = 'I am a string';
+          return state;
+        case 'OTHER_THING_HAPPENED':
+          state = false;
+          return state;
+        default:
+          return state;
+      }
+    });
+
+    test.equal(AppState.get('string'), false); // default value
+    test.equal(Blaze.toHTML(Template.stringTemplate), '');
+
+    Dispatcher.dispatch('SOMETHING_HAPPENED');
+    test.equal(AppState.get('string'), 'I am a string');
+    test.equal(Blaze.toHTML(Template.stringTemplate),
+      'I am a string inside a template.');
+
+    Dispatcher.dispatch('OTHER_THING_HAPPENED');
+    test.isFalse(AppState.get('string'));
+    test.equal(Blaze.toHTML(Template.stringTemplate), '');
+
   }
 );

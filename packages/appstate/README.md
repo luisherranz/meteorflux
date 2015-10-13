@@ -92,6 +92,37 @@ AppState.get('videoAuthor'); // => { name: 'Peter', image: { url... }, published
 AppState.get('videoAuthor.image.width') // => 300
 ```
 
+#### AppState.modify(path, function(action, state = default) {...} );
+
+If you are looking to use Flux in Meteor in "the [Redux](http://rackt.github.io/redux) way" you can use `AppState.modify` instead of `AppState.set`.
+
+This is integrated with the [MeteorFlux Dispatcher](https://github.com/worona/meteorflux/tree/devel/packages/dispatcher).
+
+Whenever you want to change the state of your app, you use this syntax:
+
+```javascript
+AppState.modify('string', function(action, state = false) {
+  switch (action.type) {
+    case 'SOMETHING_HAPPENED':
+      state = 'I am a string';
+      return state;
+    case 'OTHER_THING_HAPPENED':
+      state = false;
+      return state;
+    default:
+      return state;
+  }
+});
+```
+
+The state `string` will change when those actions are dispatched:
+
+```javascript
+Dispatcher.dispatch('SOMETHING_HAPPENED');
+```
+
+You have access to that state with Blaze helpers and `AppState.get` as usual.
+
 #### Blaze Global Helpers
 
 You can retrieve any value from any Blaze template.
