@@ -172,7 +172,7 @@ Flux is based on a **one way data flow**:
 - The **App State** represents the only truth of the app. It should not be duplicated anywhere.
 - **Views** are allowed to retrieve the **App State** when it changes.
 
-![Meteor Flux](images/MeteorFlux.jpg)
+![Meteor Flux](https://raw.githubusercontent.com/worona/meteorflux/devel/packages/dispatcher/images/MeteorFlux.jpg)
 
 Normally, Flux diagrams don't include **App State** but we are using **Meteor** to store our **App State** in *Collections and Reactive Variables*, so I wanted to include it here.
 
@@ -269,7 +269,7 @@ External Trigger (View) -> Action-> Dispatcher -> Store -> App State -> View.
 
 I have done a more complex graph to show how a Meteor app can be used following the Flux principles:
 
-![MeteorFluxGraph](images/MeteorFluxGraph.jpg)
+![MeteorFluxGraph](https://raw.githubusercontent.com/worona/meteorflux/devel/packages/dispatcher/images/MeteorFluxGraph.jpg)
 
 ### Async Operations
 
