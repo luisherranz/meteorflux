@@ -98,7 +98,7 @@ If you are looking to use Flux in Meteor in "the [Redux](http://rackt.github.io/
 
 This is integrated with the [MeteorFlux Dispatcher](https://github.com/worona/meteorflux/tree/devel/packages/dispatcher).
 
-Whenever you want to change the state of your app, you use this syntax:
+Whenever you want to change the state of your app, you can use this syntax:
 
 ```javascript
 AppState.modify('string', function(action, state = false) {
@@ -119,6 +119,8 @@ The state `string` will change when those actions are dispatched:
 
 ```javascript
 Dispatcher.dispatch('SOMETHING_HAPPENED');
+// => AppState.get('string') and {{string}} will be invalidated with
+//    the new 'I am string' value.
 ```
 
 You have access to that state with Blaze helpers and `AppState.get` as usual.
@@ -156,7 +158,8 @@ No, it's not. Session was not designed for this purpose. If you store complex ob
 
 This are some ideas to improve **AppState**. PRs are welcomed.
 
-* [ ] **Redux-style:** restrict changes to Flux action like Redux does.
+* [x] **Redux-style:** restrict changes to Flux action like Redux does.
+* [ ] **Hooks:** to modify state before and after set/get.
 * [ ] **Hot Code push:** survive to hot code pushes.
 * [ ] **Store offline:** so the next time the user comes back to your app everything is exactly as it was.
 * [ ] **Store in the url:** some of the values only. Good if the users shares the url with somebody and your app should now some of the user state.
