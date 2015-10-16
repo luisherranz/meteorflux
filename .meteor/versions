@@ -56,9 +56,9 @@ livedata@1.0.15
 logging@1.0.8
 meteor@1.1.9
 meteor-base@1.0.1
-meteorflux:appstate@1.0.0
-meteorflux:dispatcher@1.1.0
-meteorflux:dispatcher-helper@1.0.0
+meteorflux:appstate@1.1.0
+meteorflux:dispatcher@1.1.1
+meteorflux:dispatcher-helper@1.0.1
 meteorflux:namespace@1.0.0
 minifiers@1.1.7
 minimongo@1.0.10

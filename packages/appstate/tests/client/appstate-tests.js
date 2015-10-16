@@ -789,3 +789,20 @@ Tinytest.add(
 
   }
 );
+
+Tinytest.add(
+  'MeteorFlux - AppState -  Reactivity using nested objects.',
+  function(test) {
+    beforeEach();
+
+    AppState.set('object', { a: 1, b: 1 });
+    var flag = false;
+    Tracker.autorun(function() { flag = AppState.get('object.a'); });
+    test.equal(flag, 1);
+
+    AppState.set('object', { a: 2, b: 2 });
+    flag = false;
+    Tracker.autorun(function() { flag = AppState.get('object.b'); });
+    test.equal(flag, 2);
+  }
+);
