@@ -18,7 +18,7 @@ First add it to your Meteor project:
 $ meteor add meteorflux:appstate
 ```
 
-This package and API is currently under development but if you want to use it this are a few examples of what is capable of. Better documentation will come in the future.
+This package and API is currently under development but if you want to use it these are a few examples of what is capable of. Better documentation will come in the future.
 
 #### AppState.set(path, value)
 
