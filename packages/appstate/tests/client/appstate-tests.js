@@ -803,3 +803,13 @@ Tinytest.add(
     test.equal(flag, 2);
   }
 );
+
+Tinytest.add(
+  'MeteorFlux - AppState -  Object with array inside.',
+  function(test) {
+    beforeEach();
+
+    AppState.set('object', { myArray: [] });
+    test.equal(AppState.get('object'), { myArray: [] });
+  }
+);
