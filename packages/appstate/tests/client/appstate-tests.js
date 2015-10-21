@@ -813,3 +813,15 @@ Tinytest.add(
     test.equal(AppState.get('object'), { myArray: [] });
   }
 );
+
+Tinytest.add(
+  'MeteorFlux - AppState -  Should save a function returning null.',
+  function(test) {
+    beforeEach();
+
+    AppState.set('a', function() {
+      return null;
+    });
+    test.equal(AppState.get('a'), null);
+  }
+);
