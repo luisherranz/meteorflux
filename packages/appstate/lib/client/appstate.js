@@ -170,7 +170,8 @@ MeteorFlux.AppState = class AppState {
     Tracker.autorun(() => {
       let result = func();
       // check if it's a Mongo Cursor and run fetch.
-      if ((typeof result === 'object') && (result.fetch !== undefined)) {
+      if ((result) && (typeof result === 'object') &&
+          (result.fetch !== undefined)) {
         self._setObject(keyPath, result.fetch());
       } else {
         self._setObject(keyPath, result);
