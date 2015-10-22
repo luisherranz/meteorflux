@@ -116,12 +116,15 @@ MeteorFlux.AppState = class AppState {
   // This function gets the old object tree, a new one (created with
   // _createObjFromValue) and a keyPath (array) and merges both together.
   // The result is the new state.
-  _changeObj(oldObj, newObj, keyPath = []) {
+  _changeObj(oldObj, newObj, rootKeyPath = []) {
     let self = this;
 
     for (let key in newObj) {
       if (newObj.hasOwnProperty(key)) {
 
+        // We need to clone the array so we don't modify the rootKeyPath and
+        // it is still valid in the next for iteration.
+        let keyPath = [...rootKeyPath];
         keyPath.push(key);
 
         if (!_.isEqual(oldObj[key], newObj[key])) {

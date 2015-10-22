@@ -800,6 +800,7 @@ Tinytest.add(
     Tracker.autorun(function() { flag = AppState.get('object.b'); });
     test.equal(flag, 1);
     AppState.set('object', { a: 2, b: 2 });
+    Tracker.flush();
     test.equal(flag, 2);
   }
 );
