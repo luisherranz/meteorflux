@@ -45,7 +45,8 @@ MeteorFlux.Dispatcher = function(){
 * @param {function} callback
 * @return {string}
 */
-MeteorFlux.Dispatcher.prototype.register = function(callback) {
+MeteorFlux.Dispatcher.prototype.register = function(/* arguments */) {
+  var callback = this._curateCallback.apply(this, arguments);
   var id = _prefix + _lastID++;
   this._callbacks[id] = callback;
   return id;
@@ -173,6 +174,25 @@ MeteorFlux.Dispatcher.prototype._startDispatching = function(/* arguments */) {
 MeteorFlux.Dispatcher.prototype._stopDispatching = function() {
   this._pendingPayload = null;
   this._isDispatching = false;
+};
+
+/**
+ * Curate the payload. If the user uses the first argument as string, use it
+ * as action type and include it in the payload.
+ *
+ * @internal
+ */
+MeteorFlux.Dispatcher.prototype._curateCallback = function(/* arguments */) {
+  if (typeof arguments[0] === 'string') {
+    var type = arguments[0];
+    var func = arguments[1];
+    return function(action) {
+      if (action.type === type)
+        func(action);
+    };
+  } else {
+    return arguments[0];
+  }
 };
 
 

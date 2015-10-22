@@ -436,3 +436,28 @@ Tinytest.add('MeteorFlux - Dispatcher - It could be called with string as first 
 
     teardown();
 });
+
+Tinytest.add('MeteorFlux - Dispatcher - It could register with string as first argument', function (test) {
+    setup();
+
+    dispatcher.register('action', callbackA);
+    dispatcher.register('action2', callbackB);
+
+    var payload = {type: 'action'};
+    dispatcher.dispatch(payload);
+
+    test.equal(callbackA.calls.length, 1);
+    test.equal(callbackA.calls[0], payload);
+
+    test.equal(callbackB.calls.length, 0);
+
+    var payload_2 = { type: 'action2', data: 'data' };
+    dispatcher.dispatch(payload_2);
+
+    test.equal(callbackA.calls.length, 1);
+
+    test.equal(callbackB.calls.length, 1);
+    test.equal(callbackB.calls[0], payload_2);
+
+    teardown();
+});
