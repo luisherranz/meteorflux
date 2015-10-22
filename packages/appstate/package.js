@@ -25,6 +25,7 @@ Package.onTest(function(api) {
   api.use('ecmascript');
   api.use('check');
   api.use('tracker');
+  api.use('reactive-var');
   api.use('tinytest');
   api.use('blaze-html-templates');
   api.use('mongo');
