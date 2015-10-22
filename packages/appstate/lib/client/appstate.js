@@ -142,13 +142,6 @@ MeteorFlux.AppState = class AppState {
             }
             self._changeObj(oldObj[key], newObj[key], keyPath);
 
-          } else if (Match.test(newObj[key], Array)) {
-            let arrayField = { array: newObj[key] };
-            if (!Match.test(oldObj[key], Object)) {
-              oldObj[key] = {};
-            }
-            _.extend(oldObj[key], arrayField);
-            self._changeDep([...keyPath, 'array']);
           } else {
             // If it's not an object, we just overwrite the value.
             oldObj[key] = newObj[key];

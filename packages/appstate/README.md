@@ -31,7 +31,7 @@ You can do stuff like this:
 AppState.set('isVideoPlaying', false);
 
 // save some state from the database
-AppState.set('videoList', function() {
+AppState.set('videoList.items', function() {
   return Videos.find({});
 });
 
@@ -82,7 +82,7 @@ It won't invalidate things like `videoAuthor.name` or `videoAuthor.image.width`.
 You can retrieve any value using `AppState.get`.
 
 ```javascript
-AppState.get('videoList');
+AppState.get('videoList.items');
 // => [{ id: 1, title: 'Video1' }, { id: 2, title: 'Video 2' }];
 
 AppState.get('videoList.isReady'); // => true or false  
@@ -132,7 +132,7 @@ You can retrieve any value from any Blaze template.
 ```html
 <template name='VideoPlayerList'>
   {{#if videoList.isReady}}
-    {{#each videoList}}
+    {{#each videoList.items}}
       {{> VideoPlayer}}
     {{/each}}
   {{/if}}

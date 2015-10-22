@@ -663,12 +663,12 @@ Tinytest.add(
     Posts.insert({ title: 'Post 1', url: 'http://blog.com' });
     Posts.insert({ title: 'Post 2', url: 'http://blog2.com' });
 
-    AppState.set('posts', () => {
+    AppState.set('posts.items', () => {
       return Posts.find();
     });
     AppState.set('posts.isReady', true);
 
-    var posts = AppState.get('posts');
+    var posts = AppState.get('posts.items');
     test.equal(posts[0].title, 'Post 1');
     test.equal(posts[0].url, 'http://blog.com');
     test.equal(posts[1].title, 'Post 2');
@@ -689,14 +689,14 @@ Tinytest.add(
 
     var posts;
     Tracker.autorun(() => {
-      posts = AppState.get('posts');
+      posts = AppState.get('posts.items');
     });
 
     Posts = new Mongo.Collection(null);
     Posts.insert({ title: 'Post 1', url: 'http://blog.com' });
     Posts.insert({ title: 'Post 2', url: 'http://blog2.com' });
 
-    AppState.set('posts', () => {
+    AppState.set('posts.items', () => {
       return Posts.find();
     });
     AppState.set('posts.isReady', true);
@@ -723,7 +723,7 @@ Tinytest.add(
 
     var posts;
     Tracker.autorun(() => {
-      posts = AppState.get('posts');
+      posts = AppState.get('posts.items');
     });
 
     Posts = new Mongo.Collection(null);
@@ -731,7 +731,7 @@ Tinytest.add(
     Posts.insert({ title: 'Post 2', url: 'http://blog2.com' });
 
     AppState.set('posts.isReady', true);
-    AppState.set('posts', () => {
+    AppState.set('posts.items', () => {
       return Posts.find();
     });
     Tracker.flush();
@@ -809,6 +809,9 @@ Tinytest.add(
   'MeteorFlux - AppState -  Object with array inside.',
   function(test) {
     beforeEach();
+
+    AppState.set('object', { myArray: [] });
+    test.equal(AppState.get('object.myArray'), []);
 
     AppState.set('object', { myArray: [] });
     test.equal(AppState.get('object'), { myArray: [] });

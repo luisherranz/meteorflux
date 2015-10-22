@@ -79,5 +79,5 @@ His name is {{post.author.name}} and his age is {{post.author.age}}.
 </template>
 
 <template name="postTemplate4">
-{{#if posts.isReady}}{{#each posts}}Post title is {{title}} and url is {{url}}. {{/each}}{{/if}}
+{{#if posts.isReady}}{{#each posts.items}}Post title is {{title}} and url is {{url}}. {{/each}}{{/if}}
 </template>
