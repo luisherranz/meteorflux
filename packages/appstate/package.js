@@ -12,6 +12,7 @@ Package.onUse(function(api) {
   api.imply('meteorflux:namespace');
   api.use('meteorflux:dispatcher@1.1.0');
   api.imply('meteorflux:dispatcher');
+  api.use('meteorflux:reactive-state@1.0.0');
   api.use('ecmascript');
   api.use('check');
   api.use('underscore');
