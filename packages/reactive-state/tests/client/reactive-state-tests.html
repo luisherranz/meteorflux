@@ -1,0 +1,83 @@
+<template name="undefinedTemplate">
+{{#unless undefined}}Variable is false.{{/unless}}
+</template>
+
+<template name="nestedUndefinedTemplate">
+{{#unless nested.undefined}}Variable is false.{{/unless}}
+</template>
+
+<template name="stringTemplate">
+{{#if string}}{{string}} inside a template.{{/if}}
+</template>
+
+<template name="stringTemplate2">
+{{#if string2}}{{string2}} inside a template.{{/if}}
+</template>
+
+<template name="nestedStringTemplate">
+{{nested.string}} inside a template.
+</template>
+
+<template name="numberTemplate">
+This is {{number}}.
+</template>
+
+<template name="booleanTemplate">
+This is {{boolean}}.
+</template>
+
+<template name="authorTemplate">
+His name is {{author.name}}.
+</template>
+
+<template name="authorTemplate2">
+{{#with author}}His name is {{name}}.{{/with}}
+</template>
+
+<template name="authorNestedTemplate">
+{{#with author}}{{> authorChildTemplate}}{{/with}}
+</template>
+
+<template name="authorChildTemplate">
+His name is {{name}}.
+</template>
+
+<template name="authorTemplate3">
+His name is {{author.name}} and his age is {{author.age}}.
+</template>
+
+<template name="authorTemplate4">
+{{#with author}}His name is {{name}} and his age is {{age}}.{{/with}}
+</template>
+
+<template name="authorTemplate5">
+His name is {{post.author.name}}.
+</template>
+
+<template name="authorTemplate6">
+{{#with post}}His name is {{author.name}}.{{/with}}
+</template>
+
+<template name="authorTemplate7">
+His name is {{post.author.name}} and his age is {{post.author.age}}.
+</template>
+
+<template name="authorTemplate8">
+{{#with post}}His name is {{author.name}} and his age is {{author.age}}.{{/with}}
+</template>
+
+<template name="postTemplate1">
+{{#each posts}}Post title is {{title}}. {{/each}}
+</template>
+
+<template name="postTemplate2">
+{{#if post.isReady}}Post title is {{post.title}} and url is {{post.url}}.{{/if}}
+</template>
+
+<template name="postTemplate3">
+{{#with post}}{{#if isReady}}Post title is {{title}} and url is {{url}}.{{/if}}{{/with}}
+</template>
+
+<template name="postTemplate4">
+{{#if posts.isReady}}{{#each posts.items}}Post title is {{title}} and url is {{url}}. {{/each}}{{/if}}
+</template>
