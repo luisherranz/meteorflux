@@ -7,7 +7,7 @@
 
 There is more info about what is **Flux** and why you should use it in the [Dispatcher documentation](https://github.com/worona/meteorflux/tree/devel/packages/dispatcher).
 
-## MeteorFlux Dispatcher
+## MeteorFlux - Dispatcher
 
 A Flux Dispatcher for Meteor, based on Facebook's Dispatcher.
 
@@ -17,7 +17,7 @@ $ meteor add meteorflux:dispatcher
 
 Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/dispatcher). It also explains the basics of Flux.
 
-## MeteorFlux Dispatcher Helper
+## MeteorFlux - Dispatcher Helper
 
 A helper to dispatch Flux actions directly from Blaze.
 
@@ -27,9 +27,19 @@ $ meteor add meteorflux:dispatcher-helper
 
 Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/dispatcher-helper).
 
-## MeteorFlux AppState
+## MeteorFlux - ReactiveState
 
-AppState is a reactive object tree for Meteor.
+ReactiveState is a reactive object tree to save complex state in Meteor. It also exposes that state to Blaze.
+
+```
+$ meteor add meteorflux:reactive-state
+```
+
+Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/reactive-state).
+
+## MeteorFlux - AppState
+
+AppState is a single object tree to save all the state of your app in a MeteorFlux application. It also exposes that state to Blaze and forces you to modify the state of your app only responding to Flux actions.
 
 ```
 $ meteor add meteorflux:appstate
