@@ -179,6 +179,16 @@ This are some ideas to improve **AppState**. PRs are welcomed.
 
 Ideas welcomed as well. Open issues to discuss. ;)
 
+## Changelog
+
+### 1.0.1:
+
+- `_keyPathToString` now accepts strings.
+
+### 1.0.0:
+
+- First version
+
 ## License
 
 MeteorFlux is licensed under the MIT License

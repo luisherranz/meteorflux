@@ -27,12 +27,19 @@ MeteorFlux.ReactiveState = class ReactiveState {
   // This function gets a keyPath (array) and generates a new keyPath in
   // string format. For example: ['a', 'b'] returns 'a.b'.
   _keyPathToString(keyPath) {
-    return '"' + _.reduce(keyPath, function(memo, string) {
-      if (memo === '')
-        return string;
-      else
-        return memo + '.' + string;
-    }, '') + '"';
+    if (Match.test(keyPath, Array)) {
+      return _.reduce(keyPath, function(memo, string) {
+        if (memo === '')
+          return string;
+        else
+          return memo + '.' + string;
+      }, '');
+    } else if (Match.test(keyPath, String)) {
+      return keyPath;
+    } else {
+      throw new Error('keyPath must be an Array or a String.');
+    }
+
   }
 
   // This function gets a keyPath (array) and returns the value stored in
