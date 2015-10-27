@@ -4,6 +4,15 @@ let beforeEach = () => {
   Blaze._globalHelpers = [];
 };
 
+Tinytest.add(
+  'MeteorFlux - AppState - Set should trow.',
+  function(test, onComplete) {
+    beforeEach();
+
+    test.throws(AppState.set, 'appstate-set-is-forbidden');
+  }
+);
+
 Tinytest.addAsync(
   'MeteorFlux - AppState - Use modify to and get default value.',
   function(test, onComplete) {
@@ -268,8 +277,6 @@ Tinytest.add(
       else
         return state;
     });
-
-
 
     Dispatcher.dispatch('PROFILE_CHANGED',
       { firstName: 'John', lastName: 'Snow', image: 'johnsnow.jpg' });

@@ -1,4 +1,4 @@
-# MeteorFlux AppState
+# MeteorFlux - AppState
 
 *MeteorFlux is developed and maintained by [@luisherranz](https://github.com/LuisHerranz) from [@worona](https://github.com/worona).*
 
@@ -6,9 +6,22 @@
 
 ## What is it?
 
-**AppState** is a reactive object tree for Meteor.
+**AppState** is a reactive object tree for Meteor to create "Redux-like" apps.
 
-The concept behind it is to have all the state of your app in a single place, accesible from any part of your app and directly from your templates.
+The concept behind it is to have all the state of your app in a single place, accessible from any part of your app and directly from your templates.
+
+That state, can only be changed when a Flux action is dispatched, with a few exceptions.
+
+It is integrated with the [MeteorFlux Dispatcher](https://github.com/worona/meteorflux/tree/devel/packages/dispatcher) and should be used in conjunction with it.
+
+## What is Redux?
+
+Redux is a new way to think about a Flux app which simplify some of the concepts.
+
+In a Redux app, you don't deal with **Stores**, you deal with **State**. Each time a new Flux action is dispatched, the **State** of you app may change, depending on what happened.
+
+More info can be found in its documentation:
+http://rackt.org/redux/
 
 ## Current API
 
@@ -20,29 +33,103 @@ $ meteor add meteorflux:appstate
 
 This package and API is currently under development but if you want to use it these are a few examples of what is capable of. Better documentation will come in the future.
 
-#### AppState.set(path, value)
+#### AppState.modify(path, function(action, state = default) {...} );
 
-You can set and get pretty much anything and it is smart enough to mix everything together and invalidate only what has changed, even with objects, arrays, MiniMongo cursors, or functions returning objects, arrays and MiniMongo cursors.
 
-You can do stuff like this:
+Whenever you want to change the **State** of your app, you can use this syntax:
+
+```javascript
+AppState.modify('string', function(action, state = false) {
+  switch (action.type) {
+    case 'SOMETHING_HAPPENED':
+      state = 'I am a string';
+      return state;
+    case 'OTHER_THING_HAPPENED':
+      state = false;
+      return state;
+    default:
+      return state;
+  }
+});
+```
+
+The state `string` will change when those actions are dispatched:
+
+```javascript
+Dispatcher.dispatch('SOMETHING_HAPPENED');
+// => AppState.get('string') and {{string}} will be invalidated with
+//    the new 'I am string' value.
+```
+
+Inside **AppState** you can store pretty much anything:
 
 ```javascript
 // save plain state, which will become reactive automatically
-AppState.set('isVideoPlaying', false);
-
-// save some state from the database
-AppState.set('videoList.items', function() {
-  return Videos.find({});
+AppState.modify('isVideoPlaying', function(action, state = false){
+  if (action.type === 'PLAY_VIDEO')
+    return true;
+  else if (action.type === 'STOP_VIDEO')
+    return false;
+  else
+    return state;
 });
+```
 
-// mix new nested state with already defined states
-AppState.set('videoList.isReady', false);
-Meteor.subscribe('videos', function(err){
-  if (!err) {
-    AppState.set('videoList.isReady', true);
+You can then use it reactively in Blaze:
+```html
+{{#if isVideoPlaying}}
+  <span>Video is playing!</span>
+{{/if}}
+```
+or reactively in your template helpers:
+```javascript
+Template.video.helpers({
+  playerClass: function() {
+    if (AppState.get('isVideoPlaying')) {
+      return 'play';
+    } else {
+      return 'stop';
+    }
   }
 });
+```
 
+You don't need to use switch. It works with any logic:
+
+
+```javascript
+// save some state from the database
+Meteor.subscribe('videos', () => Dispatcher.dispatch('VIDEO_SUBSCRIPTION_READY'));
+AppState.modify('videoList.items', function(action, state = []) {
+  if (action.type === 'VIDEO_SUBSCRIPTION_READY')
+    return Videos.find({});
+  else
+    return state;
+});
+```
+
+You can get other state inside modify and it will be smart enough to execute first the other modifies.
+
+```javascript
+// mix new nested state with already defined states
+AppState.modify('user', function(action, state = {}) {
+  if (action.type === 'USER_SUBSCRIPTION_READY')
+    return Meteor.user.findOne();
+  else
+    return state;
+});
+AppState.modify('user.fullName', function(action, state = false) {
+  let user = AppState.get('user');
+  if (user)
+    return user.firstName + ' ' + user.lastName;
+  else
+    return state;
+});
+```
+
+
+
+```javascript
 // save complex objects
 AppState.set('videoAuthor', {
   name: 'Peter'
@@ -75,6 +162,32 @@ AppState.set('videoAuthor', {
 AppState.set('videoAuthor.image.url', 'http://www.yourserver.com/images/peter2.jpg');
 ```
 
+**AppState** is reactive, but you shouldn't rely on
+
+You should always return state if the action dispatched has nothing to do with your state.
+
+For example:
+```javascript
+AppState.modify('isVideoPlaying', function(action, state = false){
+  if (action.type === 'PLAY_VIDEO')
+    return true;
+  else if (action.type === 'STOP_VIDEO')
+    return false;
+});
+```
+this will return undefined if an action different than 'PLAY_VIDEO' or
+
+You have access to that state with Blaze helpers and `AppState.get` as usual.
+
+
+#### AppState.get(path)
+
+You can set and get pretty much anything and it is smart enough to mix everything together and invalidate only what has changed, even with objects, arrays, MiniMongo cursors, or functions returning objects, arrays and MiniMongo cursors.
+
+You can do stuff like this:
+
+
+
 It won't invalidate things like `videoAuthor.name` or `videoAuthor.image.width`.
 
 #### AppState.get(path)
@@ -92,38 +205,6 @@ AppState.get('videoAuthor'); // => { name: 'Peter', image: { url... }, published
 AppState.get('videoAuthor.image.width') // => 300
 ```
 
-#### AppState.modify(path, function(action, state = default) {...} );
-
-If you are looking to use Flux in Meteor in "the [Redux](http://rackt.github.io/redux) way" you can use `AppState.modify` instead of `AppState.set`.
-
-This is integrated with the [MeteorFlux Dispatcher](https://github.com/worona/meteorflux/tree/devel/packages/dispatcher).
-
-Whenever you want to change the state of your app, you can use this syntax:
-
-```javascript
-AppState.modify('string', function(action, state = false) {
-  switch (action.type) {
-    case 'SOMETHING_HAPPENED':
-      state = 'I am a string';
-      return state;
-    case 'OTHER_THING_HAPPENED':
-      state = false;
-      return state;
-    default:
-      return state;
-  }
-});
-```
-
-The state `string` will change when those actions are dispatched:
-
-```javascript
-Dispatcher.dispatch('SOMETHING_HAPPENED');
-// => AppState.get('string') and {{string}} will be invalidated with
-//    the new 'I am string' value.
-```
-
-You have access to that state with Blaze helpers and `AppState.get` as usual.
 
 #### Blaze Global Helpers
 
