@@ -129,7 +129,7 @@ MeteorFlux.AppState = class AppState extends ReactiveState {
 
     // Initializate but only when all modifies have been created.
     Meteor.defer(() => {
-      funcWithState({});
+      funcWithState({ type: 'INIT' });
     });
 
   }
