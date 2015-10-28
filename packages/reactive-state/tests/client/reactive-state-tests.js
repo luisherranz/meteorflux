@@ -118,6 +118,17 @@ Tinytest.add('MeteorFlux - ReactiveState - Test internal _createObjFromValue fun
   }
 );
 
+Tinytest.add('MeteorFlux - ReactiveState - Test internal _keyPathToString func',
+  function (test) {
+    beforeEach();
+
+    test.equal(reactiveState._keyPathToString(['a']), 'a');
+    test.equal(reactiveState._keyPathToString(['a', 'b']), 'a.b');
+    test.equal(reactiveState._keyPathToString('a.b'), 'a.b');
+    test.throws(reactiveState._keyPathToString, undefined);
+  }
+);
+
 
 Tinytest.add('MeteorFlux - ReactiveState - Set string',
   function (test) {

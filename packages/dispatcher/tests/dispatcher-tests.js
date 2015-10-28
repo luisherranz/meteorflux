@@ -206,7 +206,7 @@ Tinytest.add('MeteorFlux - Dispatcher - It should throw if waitFor() with invali
     }
 
     test.notEqual(error, false);
-    test.equal(error, 'dispatcher-waitfor-invalid-token');
+    test.equal(error, 'dispatcher-waitfor-circular-dependency');
 
     teardown();
 });

@@ -1,227 +1,106 @@
-MeteorFlux.AppState = class AppState {
+MeteorFlux.AppState = class AppState extends ReactiveState {
   constructor() {
+    // Call ReactiveState constructor.
+    super();
+
     let self = this;
 
-    // Value to retrieve if a key is not set yet.
-    self._NOTSET = undefined;
+    // Store the tokenIds of each modify. We store here only the modifies which
+    // are exactly the ones with the name passed. For example, for "user.name"
+    // we store only the AppState.modify('user.name'...) ones.
+    self._tokenSingleIds = {};
 
-    // Object to store all the values.
-    self._obj = {};
+    // Store the tokenIds of all modifies below each one. For example, for
+    // "user" we store all the AppState.modify('user'...) but also any
+    // AppState.modify('user.name'...) or AppState.modify('user.image'...).
+    self._tokenAllIds = {};
 
-    // Object to store all the dependencies.
-    self._deps = { children: {}, dep: new Tracker.Dependency() };
+    // Store here the modifies which are be executed but are paused for any
+    // waitFor, so we don't call them again and cause a circular recurrency.
+    self._isPending = {};
   }
 
-  // This function gets a keypath and checks if its a string like "author.name"
-  // or if it is an array. In any case, it will return the corresponding array
-  // value. For example: 'a.b' returns ['a', 'b'].
-  _checkKeyPath(keyPath) {
-    if (Match.test(keyPath, String)){
-      keyPath = keyPath.split('.');
-    } else if (!Match.test(keyPath, Array)) {
-      throw new Error('Invalid keypath');
-    }
-    return keyPath;
+  // Set cannot be used in AppState. We only 'modify'.
+  set(keyPath, newValue) {
+    throw Error('appstate-set-is-forbidden');
   }
 
-  // This function gets a keyPath (array) and generates a new keyPath in
-  // string format. For example: ['a', 'b'] returns 'a.b'.
-  _keyPathToString(keyPath) {
-    return '"' + _.reduce(keyPath, function(memo, string) {
-      if (memo === '')
-        return string;
-      else
-        return memo + '.' + string;
-    }, '') + '"';
-  }
-
-  // This function gets a keyPath (array) and returns the value stored in
-  // AppState for it. If is not set yet, it will return the _NOTSET value.
-  _getValueInPath(keyPath) {
+  // Internal function to do the waitFor logic.
+  _waitFor(keyPath) {
     let self = this;
-    let node = self._obj;
-    for (let i = 0; i < keyPath.length; i++) {
-      if ((Match.test(node, Object)) && (keyPath[i] in node)) {
-        node = node[keyPath[i]];
-      } else {
-        return self._NOTSET;
-      }
-    }
-    return node;
-  }
+    if (Dispatcher.isDispatching()) {
 
-  // This function gets a keyPath (array) and a new value and stores it in
-  // AppState.
-  _setValue(keyPath, newValue) {
-    let self = this;
-    let oldValue = self._getValueInPath(keyPath);
-    if (oldValue !== newValue) {
-      self._setValueOnPath(keyPath, newValue);
-      self._changeDep(keyPath);
-    }
-  }
+      // Find out which are the tokenIds being dispatched so we don't cause
+      // circular recurrencies.
+      let ownTokens = _.chain(self._isPending).map(
+        (isPending, keyPath) => {
+          if (isPending)
+            return self._tokenSingleIds[keyPath];
+        }
+      ).flatten().value();
 
-  // This function gets a keyPath (array) and a value and creates a new object
-  // with the proper structure from the keyPath and the value stored in its
-  // correct place. For example:
-  // ['a', 'b'] and 'data' returns { a: { b: 'data' } }
-  _createObjFromValue(keyPath, value) {
-    let self = this;
-    let obj = {};
-    let currentNode = obj;
-    let nextNode = null;
-    for (let i = 0; i < keyPath.length; i++) {
-      nextNode = currentNode[keyPath[i]] = currentNode[keyPath[i]] || {};
-      if (i === (keyPath.length - 1)) {
-        currentNode[keyPath[i]] = value;
-      } else {
-        currentNode = nextNode;
-      }
-    }
-    return obj;
-  }
+      // Node for iteration.
+      let currentKeyArray = [];
 
-  // This function takes keyPath (array) and returns the same node in the
-  // dependency object. If it doesn't exist, it will create it.
-  _getDepNode(keyPath) {
-    let self = this;
-    let currentNode = self._deps;
-    let nextNode = null;
-    for (let i = 0; i < keyPath.length; i++) {
-      nextNode = currentNode.children[keyPath[i]] =
-        currentNode.children[keyPath[i]] ||
-        { children: {}, dep: new Tracker.Dependency() };
-      currentNode = nextNode;
-    }
-    return currentNode.dep;
-  }
+      for (let i = 0; i < keyPath.length; i++) {
+        currentKeyArray = [...currentKeyArray, keyPath[i]];
+        let stringKeyPath = super._keyPathToString(currentKeyArray);
 
-  // This function adds a dependency for the keyPath (array). This means that
-  // if a Tracker computation is running, it will create the reactive
-  // dependency.
-  _addDep(keyPath){
-    let self = this;
-    let dep = self._getDepNode(keyPath);
-    dep.depend();
-  }
+        // We have to waitFor any modify in the path above the original. For
+        // example, 'user.image.width' should waitFor 'user' and 'user.image'.
+        let tokenArray = null;
+        if (i !== (keyPath.length - 1)) {
+          tokenArray = self._tokenSingleIds[stringKeyPath];
+        } else {
+          // We have to waitFor any modify in the path below the original. For
+          // example, 'user.image' should waitFor things like 'user.image' and
+          // 'user.image.url' or 'user.image.width'.
+          tokenArray = self._tokenAllIds[stringKeyPath];
+        }
 
-  // This function triggers a dependency for a value which has changed. The
-  // Tracker computations dependent will be invalidated.
-  _changeDep(keyPath) {
-    let self = this;
-    let dep = self._getDepNode(keyPath);
-    dep.changed();
-  }
-
-  // This function gets the old object tree, a new one (created with
-  // _createObjFromValue) and a keyPath (array) and merges both together.
-  // The result is the new state.
-  _changeObj(oldObj, newObj, rootKeyPath = []) {
-    let self = this;
-
-    for (let key in newObj) {
-      if (newObj.hasOwnProperty(key)) {
-
-        // We need to clone the array so we don't modify the rootKeyPath and
-        // it is still valid in the next for iteration.
-        let keyPath = [...rootKeyPath];
-        keyPath.push(key);
-
-        if (!_.isEqual(oldObj[key], newObj[key])) {
-
-          // If they are not equal, the first thing to do it to mark this
-          // keyPath as changed to trigger all the Tracker.autoruns.
-          self._changeDep(keyPath);
-
-          // Check if it is an object
-          if (Match.test(newObj[key], Object)) {
-
-            // Both are objects, use _changeObj again.
-            if (!Match.test(oldObj[key], Object)) {
-              oldObj[key] = {};
-            }
-            self._changeObj(oldObj[key], newObj[key], keyPath);
-
-          } else {
-            // If it's not an object, we just overwrite the value.
-            oldObj[key] = newObj[key];
-          }
+        // If we have something to wait for, let's wait. But we remove our own
+        // tokens first to avoid circular dependencies.
+        if (tokenArray) {
+          tokenArray = _.without(tokenArray, ...ownTokens);
+          Dispatcher.waitFor(tokenArray);
         }
       }
     }
   }
 
-  // This function takes a path (string) and registers it as a Blaze helper.
-  _registerHelper(path) {
+  // This method will add all the necesary tokens to the objects.
+  _addTokens(keyPath, tokenId) {
     let self = this;
-    Template.registerHelper(path, () => {
-      return self.get(path);
-    });
-  }
 
-  // This function gets a keyPath (array) and a function and puts it in a
-  // Tracker computation. The function will be executed and the result will be
-  // stored in the AppState. This means we don't store function, we store the
-  // resulting objects. If the function is reactive and something inside it
-  // changes, this Tracker computation will be run again and AppState will
-  // be updated with the correct values.
-  _setFunction(keyPath, func) {
-    let self = this;
-    Tracker.autorun(() => {
-      let result = func();
-      // check if it's a Mongo Cursor and run fetch.
-      if ((result) && (typeof result === 'object') &&
-          (result.fetch !== undefined)) {
-        self._setObject(keyPath, result.fetch());
-      } else {
-        self._setObject(keyPath, result);
-      }
-    });
-  }
+    let stringKeyPath = super._keyPathToString(keyPath);
 
-  // This funciton gets a keyPath (array) and a new value and it creates a new
-  // object with the value and merges it with the old object tree. Then it
-  // registers the Blaze helper.
-  _setObject(keyPath, newValue) {
-    let self = this;
-    let newObjFromValue = self._createObjFromValue(keyPath, newValue);
-    self._changeObj(self._obj, newObjFromValue);
-    self._registerHelper(keyPath[0]);
-  }
+    self._tokenSingleIds[stringKeyPath] =
+      self._tokenSingleIds[stringKeyPath] || [];
+    self._tokenSingleIds[stringKeyPath].push(tokenId);
 
-  // This public method gets a keyPath (string or array) and a new value and
-  // stores it in the AppState object tree.
-  set(keyPath, newValue) {
-    let self = this;
-    keyPath = self._checkKeyPath(keyPath);
-
-    if (Match.test(newValue, Function)) {
-      self._setFunction(keyPath, newValue);
-    } else {
-      self._setObject(keyPath, newValue);
+    let currentKeyArray = [];
+    for (let i = 0; i < keyPath.length; i++) {
+      currentKeyArray = [...currentKeyArray, keyPath[i]];
+      stringKeyPath = super._keyPathToString(currentKeyArray);
+      self._tokenAllIds[stringKeyPath] = self._tokenAllIds[stringKeyPath] || [];
+      self._tokenAllIds[stringKeyPath].push(tokenId);
     }
+  }
+
+  // Private get to use inside modify and don't trigger waitFor circular
+  // dependencies because this one doesn't call waitFor again.
+  _get(keyPath) {
+    return super.get(keyPath);
   }
 
   // This public method gets a keyPath (string or array) and returns the
   // correct value of the object tree. If a Tracker computation is currently
-  // active it will add a dependency.
+  // active it will add a dependency
   get(keyPath) {
     let self = this;
     keyPath = self._checkKeyPath(keyPath);
-
-    let value = self._getValueInPath(keyPath);
-
-    if ((Match.test(value, Object)) && (value.array)) {
-      oldValue = value;
-      value = value.array;
-      _.extend(value, _.omit(oldValue, 'array'));
-    }
-
-    if (Tracker.active) {
-      self._addDep(keyPath, value);
-    }
-
-    return value;
+    self._waitFor(keyPath);
+    return self._get(keyPath);
   }
 
   // This method is useful to modify a specific state depending on the
@@ -229,15 +108,30 @@ MeteorFlux.AppState = class AppState {
   // (http://rackt.github.io/redux/) works. Check the tests for an example.
   modify(keyPath, func) {
     let self = this;
+    let stringKeyPath = self._keyPathToString(keyPath);
+    keyPath = self._checkKeyPath(keyPath);
 
+    // Create function with state in the closure.
     var funcWithState = function(action) {
-      let state = self.get(keyPath);
-      self.set(keyPath, func(action, state));
+      // Save current modify to discard it in the waitFor and avoid circular
+      // dependencies. Save only if this is the parent modify.
+      self._isPending[stringKeyPath] = true;
+
+      let state = self._get(keyPath);
+      super.set(keyPath, func(action, state));
+
+      self._isPending[stringKeyPath] = false;
     };
 
-    funcWithState({ type: 'INITIALIZATING_MODIFY' });
+    let tokenId = Dispatcher.register(funcWithState);
 
-    Dispatcher.register(funcWithState);
+    self._addTokens(keyPath, tokenId);
+
+    // Initializate but only when all modifies have been created.
+    Meteor.defer(() => {
+      funcWithState({});
+    });
+
   }
 };
 
