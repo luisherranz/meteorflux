@@ -1,3 +1,5 @@
+/* jshint -W101, -W106 */
+
 var dispatcher,
     callbackA,
     callbackB;
@@ -206,7 +208,7 @@ Tinytest.add('MeteorFlux - Dispatcher - It should throw if waitFor() with invali
     }
 
     test.notEqual(error, false);
-    test.equal(error, 'dispatcher-waitfor-circular-dependency');
+    test.equal(error, 'dispatcher-waitfor-invalid-token');
 
     teardown();
 });
