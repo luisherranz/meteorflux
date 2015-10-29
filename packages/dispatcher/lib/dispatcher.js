@@ -113,8 +113,7 @@ MeteorFlux.Dispatcher.prototype.dispatch = function(/* arguments */) {
     'dispatcher-cant-dispatch-while-dispatching',
     'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.'
   );
-  var payload = this._curatePayload.apply(this, arguments);
-  this._startDispatching(payload);
+  this._startDispatching.apply(this, arguments);
   try {
     for (var id in this._callbacks) {
       if (this._isPending[id]) {
@@ -145,22 +144,25 @@ MeteorFlux.Dispatcher.prototype.isDispatching = function() {
 */
 MeteorFlux.Dispatcher.prototype._invokeCallback = function(id) {
   this._isPending[id] = true;
-  this._callbacks[id](this._pendingPayload);
+  this._callbacks[id].apply(this, this._pendingPayload);
   this._isHandled[id] = true;
 };
 
 /**
 * Set up bookkeeping needed when dispatching.
 *
-* @param {object} payload
+* @param {(string|object)} actionTypeOrPayload - actionType to invoke
+* or the payload object (for backwards compatability)
+* @param {Any} [payload]
 * @internal
 */
-MeteorFlux.Dispatcher.prototype._startDispatching = function(payload) {
+MeteorFlux.Dispatcher.prototype._startDispatching = function(/* arguments */) {
+
   for (var id in this._callbacks) {
     this._isPending[id] = false;
     this._isHandled[id] = false;
   }
-  this._pendingPayload = payload;
+  this._pendingPayload = arguments;
   this._isDispatching = true;
 };
 
@@ -174,29 +176,12 @@ MeteorFlux.Dispatcher.prototype._stopDispatching = function() {
   this._isDispatching = false;
 };
 
-
 /**
-* Curate the payload. If the user uses the first argument as string, use it
-* as action type and include it in the payload.
-*
-* @internal
-*/
-MeteorFlux.Dispatcher.prototype._curatePayload = function(/* arguments */) {
-  if (typeof arguments[0] === 'string') {
-    var action = arguments[1] || {};
-    action.type = arguments[0];
-    return action;
-  } else {
-    return arguments[0];
-  }
-};
-
-/**
-* Curate the payload. If the user uses the first argument as string, use it
-* as action type and include it in the payload.
-*
-* @internal
-*/
+ * Curate the payload. If the user uses the first argument as string, use it
+ * as action type and include it in the payload.
+ *
+ * @internal
+ */
 MeteorFlux.Dispatcher.prototype._curateCallback = function(/* arguments */) {
   if (typeof arguments[0] === 'string') {
     var type = arguments[0];
@@ -210,10 +195,7 @@ MeteorFlux.Dispatcher.prototype._curateCallback = function(/* arguments */) {
   }
 };
 
-/**
-* Reset everything. Created for testing purposes
-*
-*/
+
 MeteorFlux.Dispatcher.prototype.reset = function() {
   this._callbacks = {};
   this._isPending = {};
