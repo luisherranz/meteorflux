@@ -494,6 +494,12 @@ I have created three examples:
 
 CartFlux is the most complex. It has users accounts, pagination (with *look ahead* subscriptions), routing and testing. If you feel like reading more about it you can do so in [this  thread](https://forums.meteor.com/t/meteorflux-flow/920) of the Meteor forums. Be aware, it's a very long thread :)
 
+# Changelog
+
+### 1.2.0
+
+- Added filters for both dispatch and register. This is in testing mode yet. Probably not the final implementation.
+
 # License
 
 MeteorFlux is licensed under the MIT License

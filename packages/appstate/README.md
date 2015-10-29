@@ -292,6 +292,12 @@ This are some ideas to improve **AppState**. PRs are welcomed.
 
 Ideas welcomed as well. Open issues to discuss. ;)
 
+## Changelog
+
+### 1.2.2
+
+- Update Dispatcher to version 1.2.0
+
 ## License
 
 MeteorFlux is licensed under the MIT License
