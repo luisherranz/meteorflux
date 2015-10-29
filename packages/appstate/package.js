@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:appstate',
-  version: '1.2.1',
+  version: '1.2.2',
   summary: 'AppState is a reactive object tree for Meteor',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
@@ -10,7 +10,7 @@ Package.onUse(function(api) {
   api.versionsFrom('1.2');
   api.use('meteorflux:namespace@1.0.0');
   api.imply('meteorflux:namespace');
-  api.use('meteorflux:dispatcher@1.1.0');
+  api.use('meteorflux:dispatcher@1.2.0');
   api.imply('meteorflux:dispatcher');
   api.use('meteorflux:reactive-state@1.0.0');
   api.use('ecmascript');
