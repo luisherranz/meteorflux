@@ -1,5 +1,7 @@
 let beforeEach = () => {
   Dispatcher.reset();
+  Dispatcher.addDispatchFilter(Dispatcher._curatePayload);
+  Dispatcher.addRegisterFilter(Dispatcher._curateCallback);
   AppState = new MeteorFlux.AppState();
   Blaze._globalHelpers = [];
 };
