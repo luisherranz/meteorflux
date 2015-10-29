@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:dispatcher',
-  version: '1.1.1',
+  version: '1.2.0',
   summary: 'A Flux Dispatcher for Meteor, based on Facebook\'s Dispatcher',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'

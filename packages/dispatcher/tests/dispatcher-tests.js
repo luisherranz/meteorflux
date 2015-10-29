@@ -18,8 +18,6 @@ var mockCallback = function( name ) {
 };
 
 var stringMockCallback = function(action, name) {
-    var name = name;
-    var action = action;
 
     var funcs = {};
     funcs[name] = {};
@@ -41,6 +39,8 @@ var stringMockCallback = function(action, name) {
 
 var setup = function() {
     dispatcher = new MeteorFlux.Dispatcher();
+    dispatcher.addDispatchFilter(dispatcher._curatePayload);
+    dispatcher.addRegisterFilter(dispatcher._curateCallback);
     callbackA = mockCallback("A");
     callbackB = mockCallback("B");
 };
@@ -164,6 +164,7 @@ Tinytest.add('MeteorFlux - Dispatcher - It should execute all subscriber callbac
 
 Tinytest.add('MeteorFlux - Dispatcher - It should execute all subscriber callbacks -String call', function (test) {
     stringSetup();
+
 
     dispatcher.register(callbackA);
     dispatcher.register(callbackB);
@@ -415,26 +416,30 @@ Tinytest.add('MeteorFlux - Dispatcher - It should properly unregister callbacks'
 
 
 Tinytest.add('MeteorFlux - Dispatcher - It could be called with string as first argument', function (test) {
-    stringSetup();
+    setup();
 
     dispatcher.register(callbackA);
     dispatcher.register(callbackB);
 
     var payload = {};
-    dispatcher.dispatch('actionA', payload);
+    dispatcher.dispatch('action', payload);
 
     test.equal(callbackA.calls.length, 1);
-    test.equal(callbackB.calls.length, 0);
     test.equal(callbackA.calls[0], payload);
+    test.equal(payload, { type: 'action' });
 
-    test.equal(callbackB.calls.length, 0);
+    test.equal(callbackB.calls.length, 1);
+    test.equal(callbackB.calls[0], payload);
 
     var payload_2 = { data: 'data' };
-    dispatcher.dispatch('actionB', payload_2);
+    dispatcher.dispatch('action2', payload_2);
 
-    test.equal(callbackA.calls.length, 1);
-    test.equal(callbackB.calls.length, 1);
-    test.equal(callbackB.calls[0], payload_2);
+    test.equal(callbackA.calls.length, 2);
+    test.equal(callbackA.calls[1], payload_2);
+    test.equal(payload_2, { data: 'data', type: 'action2' });
+
+    test.equal(callbackB.calls.length, 2);
+    test.equal(callbackB.calls[1], payload_2);
 
     teardown();
 });
@@ -445,16 +450,16 @@ Tinytest.add('MeteorFlux - Dispatcher - It could register with string as first a
     dispatcher.register('action', callbackA);
     dispatcher.register('action2', callbackB);
 
-    var payload = {type: 'action'};
-    dispatcher.dispatch(payload);
+    var payload = {};
+    dispatcher.dispatch('action', payload);
 
     test.equal(callbackA.calls.length, 1);
     test.equal(callbackA.calls[0], payload);
 
     test.equal(callbackB.calls.length, 0);
 
-    var payload_2 = { type: 'action2', data: 'data' };
-    dispatcher.dispatch(payload_2);
+    var payload_2 = { data: 'data' };
+    dispatcher.dispatch('action2', payload_2);
 
     test.equal(callbackA.calls.length, 1);
 

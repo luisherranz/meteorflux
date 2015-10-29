@@ -34,8 +34,7 @@ MeteorFlux.Dispatcher = function(){
   this._isPending = {};
   this._isHandled = {};
   this._isDispatching = false;
-  this._dispatchFilters = [];
-  this._registerFilters = [];
+  this._filters = [];
   this._pendingPayload = null;
 };
 
@@ -48,12 +47,9 @@ MeteorFlux.Dispatcher = function(){
 * @return {string}
 */
 MeteorFlux.Dispatcher.prototype.register = function(/* arguments */) {
-  var callback = arguments;
-  for (var i = 0; i < this._registerFilters.length; i++) {
-    callback = this._registerFilters[i].apply(this, callback);
-  }
+  var callback = this._curateCallback.apply(this, arguments);
   var id = _prefix + _lastID++;
-  this._callbacks[id] = callback[0];
+  this._callbacks[id] = callback;
   return id;
 };
 
@@ -118,11 +114,15 @@ MeteorFlux.Dispatcher.prototype.dispatch = function(/* arguments */) {
     'dispatcher-cant-dispatch-while-dispatching',
     'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.'
   );
+<<<<<<< Updated upstream
+  this._startDispatching.apply(this, arguments);
+=======
   var payload = arguments;
-  for (var i = 0; i < this._dispatchFilters.length; i++) {
-    payload = this._dispatchFilters[i].apply(this, payload);
+  for (var i = 0; i < this._filters.length; i++) {
+    payload = this._filters[i].apply(this, payload);
   }
   this._startDispatching.apply(this, payload);
+>>>>>>> Stashed changes
   try {
     for (var id in this._callbacks) {
       if (this._isPending[id]) {
@@ -141,18 +141,8 @@ MeteorFlux.Dispatcher.prototype.dispatch = function(/* arguments */) {
 *
 * @param {function} callback
 */
-MeteorFlux.Dispatcher.prototype.addDispatchFilter = function(filter) {
-  this._dispatchFilters.push(filter);
-};
-
-/**
-* Registers a filter to be invoked when the register is called. It can alter
-* the callback.
-*
-* @param {function} callback
-*/
-MeteorFlux.Dispatcher.prototype.addRegisterFilter = function(filter) {
-  this._registerFilters.push(filter);
+MeteorFlux.Dispatcher.prototype.addFilter = function(filter) {
+  this._filters.push(filter);
 };
 
 /**
@@ -180,7 +170,9 @@ MeteorFlux.Dispatcher.prototype._invokeCallback = function(id) {
 /**
 * Set up bookkeeping needed when dispatching.
 *
-* @param {object} payload
+* @param {(string|object)} actionTypeOrPayload - actionType to invoke
+* or the payload object (for backwards compatability)
+* @param {Any} [payload]
 * @internal
 */
 MeteorFlux.Dispatcher.prototype._startDispatching = function(/* arguments */) {
@@ -203,21 +195,14 @@ MeteorFlux.Dispatcher.prototype._stopDispatching = function() {
   this._isDispatching = false;
 };
 
+<<<<<<< Updated upstream
 /**
-* Curate the payload. If the user uses the first argument as string, use it
-* as action type and include it in the payload.
-*
-* @internal
-*/
-MeteorFlux.Dispatcher.prototype._curatePayload = function(/* arguments */) {
-  if (typeof arguments[0] === 'string') {
-    var action = arguments[1] || {};
-    action.type = arguments[0];
-    return [action];
-  } else {
-    return arguments;
-  }
-};
+ * Curate the payload. If the user uses the first argument as string, use it
+ * as action type and include it in the payload.
+ *
+ * @internal
+ */
+=======
 
 /**
 * Curate the payload. If the user uses the first argument as string, use it
@@ -225,29 +210,25 @@ MeteorFlux.Dispatcher.prototype._curatePayload = function(/* arguments */) {
 *
 * @internal
 */
+>>>>>>> Stashed changes
 MeteorFlux.Dispatcher.prototype._curateCallback = function(/* arguments */) {
   if (typeof arguments[0] === 'string') {
     var type = arguments[0];
     var func = arguments[1];
-    return [function(action) {
+    return function(action) {
       if (action.type === type)
         func(action);
-    }];
+    };
   } else {
-    return arguments;
+    return arguments[0];
   }
 };
 
-/**
-* Reset everything. Created for testing purposes
-*
-*/
+
 MeteorFlux.Dispatcher.prototype.reset = function() {
   this._callbacks = {};
   this._isPending = {};
   this._isHandled = {};
-  this._registerFilters = [];
-  this._dispatchFilters = [];
   this._isDispatching = false;
   this._pendingPayload = null;
 };
@@ -259,5 +240,21 @@ MeteorFlux.Dispatcher.prototype.reset = function() {
 */
 
 Dispatcher = new MeteorFlux.Dispatcher();
-Dispatcher.addDispatchFilter(Dispatcher._curatePayload);
-Dispatcher.addRegisterFilter(Dispatcher._curateCallback);
+
+/**
+* Curate the payload. If the user uses the first argument as string, use it
+* as action type and include it in the payload.
+*
+* @internal
+*/
+var curatePayload = function(/* arguments */) {
+  if (typeof arguments[0] === 'string') {
+    var action = arguments[1] || {};
+    action.type = arguments[0];
+    return action;
+  } else {
+    return arguments[0];
+  }
+};
+
+Dispatcher.addFilter(curatePayload);
