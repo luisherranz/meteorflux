@@ -18,7 +18,7 @@ $ meteor add meteorflux:first-then-finally
 
 ## The idea behind it
 
-Flux is a great way to know what is really happening in your app, but it is **Action Driven**. Meteor is a great framework to write complex apps, but it is **Data Driven**.
+Flux is a great way to know what is really happening in your app and decouple your logic from your views, but it is **Action Driven**. Meteor is a great framework to write complex apps, but it is **Data Driven**.
 
 To join both worlds and get the best from them, you can use this flow:
 
@@ -295,6 +295,10 @@ For any doubt, use the [Github issues](https://github.com/worona/meteorflux/issu
 The concepts behind it are similar, like **Avoid dispathing in the middle of a dispatch** or **One way data flow** but this dispatcher is using Meteor's reactivity and it's been built to have three different phases: **First**, **Then** and **Finally**.
 
 ## Changelog
+
+### 1.2.3:
+
+- Update **ReactiveState** to 1.1.1.
 
 ### 1.2.2:
 
