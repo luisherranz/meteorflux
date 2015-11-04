@@ -181,6 +181,10 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
+### 1.1.0:
+
+- `State.set` now has a state parameter.
+
 ### 1.0.1:
 
 - `_keyPathToString` now accepts strings.

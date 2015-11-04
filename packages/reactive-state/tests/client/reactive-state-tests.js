@@ -807,6 +807,42 @@ Tinytest.add(
   }
 );
 
+Tinytest.add(
+  'MeteorFlux - ReactiveState -  Should get a paramter with state default.',
+  function(test) {
+    beforeEach();
+
+    reactiveState.set('a', function(state = 123) {
+      return state;
+    });
+    test.equal(reactiveState.get('a'), 123);
+  }
+);
+
+Tinytest.add(
+  'MeteorFlux - ReactiveState -  Should get a paramter with old state value.',
+  function(test) {
+    beforeEach();
+
+    var react = new ReactiveVar(false);
+
+    reactiveState.set('a', function(state = false) {
+      if (react.get() === true)
+        return true;
+      else
+        return state;
+    });
+
+    test.equal(reactiveState.get('a'), false); // return state (default = false)
+    react.set(true);
+    Tracker.flush();
+    test.equal(reactiveState.get('a'), true); // return true
+    react.set(false);
+    Tracker.flush();
+    test.equal(reactiveState.get('a'), true); // return state (previous state)
+  }
+);
+
 // Won't fix for now, until we see if this is really important.
 // Tinytest.add(
 //   'MeteorFlux - ReactiveState -  Should stop a computation not used anymore.',
