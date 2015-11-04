@@ -16,12 +16,22 @@ Just add it to your Meteor project using:
 $ meteor add meteorflux:first-then-finally
 ```
 
-## How to use it
+## The idea behind it
+
+Flux is a great way to know what is really happening in your app, but it is **Action Driven**. Meteor is a great framework to write complex apps, but it is **Data Driven**.
+
+To join both worlds and get the best from them, you can use this flow:
+
+- When an **Action** is dispatched, **First** callbacks are triggered before anything else. Use them to write to the database, for example. These functions will be called only once.
+- After that, all the reactive functions are triggered. These are the **Then** callbacks or any typical **State** function. These functions will be called as many times as they need if their reactive sources are invalidated not only by **Action** but by other reactivity.
+- Once all the reactivity has finished and **State** is stable again, the **Finally** callbacks are triggered. Use them when you need to do staff with the updated **State** which can't be triggered more than once, like for example analytics or logging.
+
+## If you are new to Flux
 
 First, you need to understand Flux. Go here for details:
 https://github.com/worona/meteorflux/tree/devel/packages/dispatcher
 
-Then, you have to understand Meteor's reactivity. You can start here:
+Then, you probably want to understand Meteor's reactivity. You can start here:
 http://docs.meteor.com/#/full/reactivity
 
 And finally, learn to use **First, Then, Finally!**:
@@ -177,6 +187,41 @@ Then(() => {
 
 You shouldn't trust **Then** callbacks for tasks which may be called only once. For that purpose, use either **First** or **Finally**.
 
+## State
+
+You have access to a global **State** object to store all the state of your application. We have used MeteorFlux ReactiveState for that, so you can learn more about it here:
+https://github.com/worona/meteorflux/tree/devel/packages/reactive-state
+
+Typically, you may want to use `State.set` instead of **Then** when you want to change some State. They will be invalidated in the **Then** phase as well.
+
+```javascript
+State.set('selectedPost', (state = false) => {
+  switch(Action.type()) {
+    case 'NEW_POST_SELECTED':
+      return Action._id;
+    case 'POST_DELETED':
+      return false;
+    default:
+      return state;
+  }
+});
+```
+
+You don't need to use **Action** if you don't want to. For example, this works just fine:
+
+```javascript
+State.set('posts.items', (state = []) => {
+  return Posts.find();
+});
+```
+
+```javascript
+let handle = Meteor.subscribe('posts');
+State.set('posts.isReady', (state = false) => {
+  return !!handle && handle.ready();
+});
+```
+
 ## Finally
 
 **Finally** callbacks are used for logs, analytics or other calls to 3rd party services which only have to be called once, but after you know all the **State** is final.
@@ -197,11 +242,6 @@ Finally(() => {
   }
 });
 ```
-
-## State
-
-This package adds a global **State** object to store all the state of your application. We have used MeteorFlux ReactiveState for that, so you can learn more about it here:
-https://github.com/worona/meteorflux/tree/devel/packages/reactive-state
 
 ## Use everything together
 
@@ -255,6 +295,10 @@ For any doubt, use the [Github issues](https://github.com/worona/meteorflux/issu
 The concepts behind it are similar, like **Avoid dispathing in the middle of a dispatch** or **One way data flow** but this dispatcher is using Meteor's reactivity and it's been built to have three different phases: **First**, **Then** and **Finally**.
 
 ## Changelog
+
+### 1.2.2:
+
+- Update README.
 
 ### 1.2.1:
 

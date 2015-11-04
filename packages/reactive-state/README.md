@@ -93,6 +93,36 @@ state.set('videoAuthor.image.url', 'http://www.yourserver.com/images/peter2.jpg'
 
 It won't invalidate things like `videoAuthor.name` or `videoAuthor.image.width`.
 
+You can pass the default state on initialization and old value on next invalidations:
+
+```javascript
+
+state.set('something', function(state = '') {
+  var postId = FlowRouter.getParam(postId);
+  if (postId)
+    return postId;
+  else
+    return state;
+});
+```
+
+You can make state dependent on other state:
+
+```javascript
+state.set('post.isPublished', function(state = false) {
+  var selectedPost = state.get('selectedPost');
+  var post = Posts.findOne(selectedPost);
+  if ((!!post) && (post.published === true))
+    return true;
+  else
+    return false;
+});
+```
+
+Whenever you change `selectedPost`, `post.isPublished` will change as well.
+
+You can pass the old state using
+
 #### state.get(path)
 
 You can retrieve any value using `state.get`.
@@ -180,6 +210,10 @@ This are some ideas to improve **AppState**. PRs are welcomed.
 Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
+
+### 1.1.1:
+
+- Update README.
 
 ### 1.1.0:
 
