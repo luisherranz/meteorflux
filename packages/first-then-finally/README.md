@@ -256,6 +256,10 @@ The concepts behind it are similar, like **Avoid dispathing in the middle of a d
 
 ## Changelog
 
+### 1.2.0:
+
+- Add `Dispatch.after()` to queue actions.
+
 ### 1.1.0:
 
 - Add `Dispatch.isDispatching()`.

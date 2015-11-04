@@ -443,3 +443,48 @@ Tinytest.add('FirstThenFinally - Dispatcher is dispatching',
     Dispatch('SOMETHING_HAPPENED');
   }
 );
+
+Tinytest.add('FirstThenFinally - Dispatcher should queue actions with after',
+  function (test) {
+    beforeEach();
+
+    let text = '';
+
+    First(() => {
+      switch (Action.type()) {
+        case 'SOMETHING_HAPPENED':
+          text = text + '1, ';
+          break;
+        case 'ANOTHER_THING_HAPPENED':
+          text = text + '2, ';
+          break;
+        case 'NOW_WITH_PAYLOAD':
+          text = text + Action.data;
+          break;
+      }
+    });
+
+    Dispatch('SOMETHING_HAPPENED')
+      .after('ANOTHER_THING_HAPPENED')
+      .after('NOW_WITH_PAYLOAD', { data: '3!' });
+    Tracker.flush();
+
+    test.equal(text, '1, 2, 3!');
+  }
+);
+
+Tinytest.add('FirstThenFinally - Empty payload should return empty object',
+  function (test) {
+    beforeEach();
+
+    let emptyPayload = null;
+
+    First(() => {
+      emptyPayload = Action.payload();
+    });
+
+    Dispatch('SOMETHING_HAPPENED');
+
+    test.equal(emptyPayload, {});
+  }
+);
