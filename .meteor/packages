@@ -20,9 +20,5 @@ ecmascript              # Enable ECMAScript2015+ syntax in app code
 insecure
 autopublish
 
-meteorflux:dispatcher
-meteorflux:dispatcher-helper
-meteorflux:appstate
-babrahams:constellation
-kadira:blaze-layout
-kadira:flow-router
+meteorflux:first-then-finally
+meteorflux:first-then-finally-blaze

@@ -38,7 +38,7 @@ $ meteor add meteorflux:reactive-state
 
 Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/reactive-state).
 
-## MeteorFlux - First, Then, Finally!
+## MeteorFlux - First, Then, Finally! (FTF)
 
 This is a **highly experimental** new framework for extensible Flux apps.
 
@@ -47,6 +47,16 @@ $ meteor add meteorflux:first-then-finally
 ```
 
 Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/first-then-finally).
+
+## MeteorFlux - FTF Blaze Helper
+
+A helper to dispatch Flux actions directly from Blaze.
+
+```
+$ meteor add meteorflux:first-then-finally-blaze
+```
+
+Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/first-then-finally-blaze).
 
 ## MeteorFlux - AppState
 
