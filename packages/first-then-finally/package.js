@@ -1,18 +1,18 @@
 Package.describe({
   name: 'meteorflux:first-then-finally',
-  version: '1.0.0',
+  version: '1.0.1',
   summary: 'A Flux framework for extensible Meteor applications',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
 });
 
 Package.onUse(function(api) {
-  api.versionsFrom('1.0');
-  api.use('ecmascript');
+  api.versionsFrom('1.2');
   api.use('reactive-dict');
   api.use('check');
   api.use('tracker');
   api.use('underscore');
+  api.use('ecmascript');
   api.use('meteorflux:namespace@1.0.0');
   api.imply('meteorflux:namespace@1.0.0');
   api.use('meteorflux:reactive-state@1.0.1');
