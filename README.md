@@ -27,6 +27,27 @@ $ meteor add meteorflux:dispatcher-helper
 
 Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/dispatcher-helper).
 
+
+## MeteorFlux - ReactiveState
+
+ReactiveState is a reactive object tree to save complex state in Meteor. It also exposes that state to Blaze.
+
+```
+$ meteor add meteorflux:reactive-state
+```
+
+Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/reactive-state).
+
+## MeteorFlux - First, Then, Finally!
+
+This is a **highly experimental** new framework for extensible Flux apps.
+
+```
+$ meteor add meteorflux:first-then-finally
+```
+
+Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/first-then-finally).
+
 ## MeteorFlux - AppState
 
 AppState is a single object tree to save all the state of your app in a MeteorFlux application. It also exposes that state to Blaze and forces you to modify the state of your app only responding to Flux actions.
@@ -38,13 +59,3 @@ $ meteor add meteorflux:appstate
 ```
 
 Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/appstate).
-
-## MeteorFlux - ReactiveState
-
-ReactiveState is a reactive object tree to save complex state in Meteor. It also exposes that state to Blaze.
-
-```
-$ meteor add meteorflux:reactive-state
-```
-
-Check the [documentation here](https://github.com/worona/meteorflux/tree/devel/packages/reactive-state).
