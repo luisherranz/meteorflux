@@ -13,6 +13,8 @@ MeteorFlux.FirstThenFinally = class FirstThenFinally {
 
     self.Action = {};
     self._populatePayload();
+
+    self._queuedActions = [];
   }
 
   _populatePayload(payload = {}) {
@@ -112,7 +114,22 @@ MeteorFlux.FirstThenFinally = class FirstThenFinally {
       // End dispatching
       self._isDispatching = false;
       self._phase = 'idle';
+
+      // See if there are queueded actions
+      if (self._queuedActions.length > 0) {
+        let args = self._queuedActions[0];
+        self._queuedActions.shift();
+        self.Dispatch.apply(self, args);
+      }
     });
+
+    return self;
+  }
+
+  after(/*arguments*/) {
+    let self = this;
+    self._queuedActions.push(arguments);
+    return self;
   }
 
   isDispatching() {
