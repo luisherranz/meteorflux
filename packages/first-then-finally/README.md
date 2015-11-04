@@ -143,7 +143,7 @@ If you think of this typical example:
 
 ```javascript
 let city = new ReactiveVar('Madrid');
-let weather = new Reactive('sunny');
+let weather = new ReactiveVar('sunny');
 
 Tracker.autorun(() => {
   console.log('It is ' + weather.get() + ' in ' + city.get() + '.');
@@ -256,9 +256,13 @@ The concepts behind it are similar, like **Avoid dispathing in the middle of a d
 
 ## Changelog
 
+### 1.1.0:
+
+- Add `Dispatch.isDispatching()`.
+
 ### 1.0.0:
 
-- First version
+- First version.
 
 ## License
 

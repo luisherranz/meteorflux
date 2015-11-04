@@ -127,5 +127,6 @@ First = ftf.First.bind(ftf);
 Then = ftf.Then.bind(ftf);
 Finally = ftf.Finally.bind(ftf);
 Dispatch = ftf.Dispatch.bind(ftf);
+Dispatch.isDispatching = ftf.isDispatching.bind(ftf);
 Action = ftf.Action;
 State = new MeteorFlux.ReactiveState();

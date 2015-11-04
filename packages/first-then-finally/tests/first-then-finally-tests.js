@@ -19,6 +19,7 @@ let beforeEach = () => {
   Finally = ftf.Finally.bind(ftf);
 
   Dispatch = ftf.Dispatch.bind(ftf);
+  Dispatch.isDispatching = ftf.isDispatching.bind(ftf);
   Action = ftf.Action;
 
   callbackA = mockCallback("A");
@@ -426,5 +427,19 @@ Tinytest.add('FirstThenFinally - State is working',
     test.instanceOf(State, MeteorFlux.ReactiveState);
     State.set('something', true);
     test.isTrue(State.get('something'));
+  }
+);
+
+Tinytest.add('FirstThenFinally - Dispatcher is dispatching',
+  function (test) {
+    beforeEach();
+
+    First(() => {
+      test.equal(Dispatch.isDispatching(), true);
+    });
+
+    test.equal(Dispatch.isDispatching(), false);
+
+    Dispatch('SOMETHING_HAPPENED');
   }
 );
