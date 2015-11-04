@@ -175,7 +175,8 @@ MeteorFlux.ReactiveState = class ReactiveState {
   _setFunction(keyPath, func) {
     let self = this;
     Tracker.autorun(() => {
-      let result = func();
+      let oldValue = self._getValueInPath(keyPath);
+      let result = func(oldValue);
       // check if it's a Mongo Cursor and run fetch.
       if ((result) && (typeof result === 'object') &&
           (result.fetch !== undefined)) {
