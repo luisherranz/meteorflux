@@ -198,6 +198,10 @@ console.log(Action.vehicle2.checked); // => true in our example
 
 ## Changelog
 
+### 1.0.1:
+
+- Update to FTF 1.2.4
+
 ### 1.0.0:
 
 - First release

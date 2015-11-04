@@ -296,6 +296,10 @@ The concepts behind it are similar, like **Avoid dispathing in the middle of a d
 
 ## Changelog
 
+### 1.2.4:
+
+- Change `after` for `then`.
+
 ### 1.2.3:
 
 - Update **ReactiveState** to 1.1.1.

@@ -126,7 +126,7 @@ MeteorFlux.FirstThenFinally = class FirstThenFinally {
     return self;
   }
 
-  after(/*arguments*/) {
+  then(/*arguments*/) {
     let self = this;
     self._queuedActions.push(arguments);
     return self;

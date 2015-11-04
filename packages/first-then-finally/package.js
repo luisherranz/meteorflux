@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:first-then-finally',
-  version: '1.2.3',
+  version: '1.2.4',
   summary: 'A Flux framework for extensible Meteor applications',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'

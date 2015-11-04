@@ -465,8 +465,8 @@ Tinytest.add('FirstThenFinally - Dispatcher should queue actions with after',
     });
 
     Dispatch('SOMETHING_HAPPENED')
-      .after('ANOTHER_THING_HAPPENED')
-      .after('NOW_WITH_PAYLOAD', { data: '3!' });
+      .then('ANOTHER_THING_HAPPENED')
+      .then('NOW_WITH_PAYLOAD', { data: '3!' });
     Tracker.flush();
 
     test.equal(text, '1, 2, 3!');
