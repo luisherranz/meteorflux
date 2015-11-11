@@ -37,7 +37,16 @@ MeteorFlux.FirstThenFinallyBlaze = class FirstThenFinallyBlaze {
     // add any form value to the Action payload.
     let formFields = event.currentTarget;
     formFields = _.filter(formFields, k => k.type !== 'submit');
-    formFields = _.object(_.map(formFields, k => k.name), formFields);
+    formFields = _.object(
+      _.map(formFields, k => k.name),
+      _.map(formFields, k => {
+        if (k.type === 'checkbox')
+          return k.checked;
+        else if (k.type === 'radio')
+          return $('input[name=' + k.name + ']:checked').val();
+        else
+          return k.value;
+      }));
 
     _.extend(action, dataSet, formFields);
     Dispatch(action);

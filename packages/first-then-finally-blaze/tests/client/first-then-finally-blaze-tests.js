@@ -12,23 +12,32 @@ Tinytest.add(
     var event = {
       preventDefault: function() {},
       stopImmediatePropagation: function() {},
-      currentTarget: {
-        getAttribute: function() { return 'SOMETHING_HAPPENED'; },
-        dataset: {
-          id: '1234',
-          userName: 'John'
-        }
-    }};
+      currentTarget: [
+        { type: 'submit', name: 'SubmitName', value: 'SubmitValue' },
+        { type: 'text', name: 'TextName', value: 'TextValue' },
+        { type: 'password', name: 'PasswordName', value: 'PasswordValue' },
+        { type: 'checkbox', name: 'CheckboxName', checked: true }
+      ]
+    };
+    event.currentTarget.getAttribute = function() {
+      return 'SOMETHING_HAPPENED';
+    };
+    event.currentTarget.dataset = {
+      id: '1234',
+      userName: 'John'
+    };
     var template = { someOtherData: 'otherData' };
 
     // Data coming out.
-    var action = {
-      type: 'SOMETHING_HAPPENED',
+    var payload = {
       context: that,
       template: template,
       event: event,
       id: '1234',
-      userName: 'John'
+      userName: 'John',
+      CheckboxName: true,
+      TextName: 'TextValue',
+      PasswordName: 'PasswordValue',
     };
 
     var result = null;
@@ -40,6 +49,6 @@ Tinytest.add(
 
     FirstThenFinallyBlaze._dispatch.call(that, event, template);
 
-    test.isTrue(result, action);
+    test.equal(result, payload);
   }
 );

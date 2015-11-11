@@ -168,10 +168,12 @@ But you can access them as well in the `payload`. For example, a form like this:
 ```html
 <body>
   <form dispatch='SOMETHING_HAPPENED'>
-    <input type="text" name="text" value="">
+    <input type="text" name="text" value="Text Example">
     <input type="submit" name="submit" value="Submit">
     <input type="checkbox" name="vehicle1" value="Bike">I have a bike<br>
     <input type="checkbox" name="vehicle2" value="Car" checked> I have a car<br>
+    <input type="radio" name="gender" value="Male"><br>
+    <input type="radio" name="gender" value="Female" checked><br>
   </form>
 </body>
 ```
@@ -179,24 +181,22 @@ Will have this `payload`:
 ```javascript
 {
   type: 'INCREASE_VERSION',
-  text: object // DOM object for input with name 'text'
-  vehicle1: object // DOM object for input with name 'vehicle1'
-  vehicle2: object // DOM object for input with name 'vehicle2'
-  context: // the data context. Equivalent to 'this'.
-  event: // the event which triggered the action.
-  template: // the template in where the action was triggered.
+  text: 'Text Example', // Value for input with name 'text'
+  vehicle1: false, // Checked for checkbox with name 'vehicle1'
+  vehicle2: true, // Checked for checkbox with name 'vehicle2'
+  gender: 'Female' // Value for checked radio with name 'gender'
+  context: {...}, // the data context. Equivalent to 'this'.
+  event: {...}, // the event which triggered the action.
+  template: {...} // the template in where the action was triggered.
 }
-```
-
-Use those values like normal DOM objects. For example:
-```javascript
-console.log(Action.text.value); // => value written in the text box
-console.log(Action.vehicle1.checked); // => false in our example
-console.log(Action.vehicle2.checked); // => true in our example
 ```
 
 
 ## Changelog
+
+### 1.1.0:
+
+- Improve form values. Now they don't use value anymore.
 
 ### 1.0.1:
 

@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:first-then-finally-blaze',
-  version: '1.0.1',
+  version: '1.1.0',
   summary: 'A Blaze tool to dispatch actions right from the html',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
