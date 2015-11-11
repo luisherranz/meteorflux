@@ -843,6 +843,38 @@ Tinytest.add(
   }
 );
 
+Tinytest.add(
+  'MeteorFlux - ReactiveState -  Should join a normal field with findOne.',
+  function(test) {
+    beforeEach();
+
+    Posts = new Mongo.Collection(null);
+    var id = Posts.insert({ title: 'Post 1', url: 'http://blog.com' });
+    var react = new ReactiveVar('');
+
+    reactiveState.set('post.isReady', function(state = false) {
+      if (react.get() === id)
+        return true;
+      else
+        return state;
+    });
+
+    reactiveState.set('post', function(state = {}) {
+      return Posts.findOne(react.get());
+    });
+
+    test.equal(reactiveState.get('post.isReady'), false);
+    test.equal(reactiveState.get('post.title'), undefined);
+
+    react.set(id);
+    Tracker.flush();
+
+    test.equal(reactiveState.get('post.isReady'), true);
+    test.equal(reactiveState.get('post.title'), 'Post 1');
+
+  }
+);
+
 // Won't fix for now, until we see if this is really important.
 // Tinytest.add(
 //   'MeteorFlux - ReactiveState -  Should stop a computation not used anymore.',

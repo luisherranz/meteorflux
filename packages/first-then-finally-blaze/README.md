@@ -194,6 +194,10 @@ Will have this `payload`:
 
 ## Changelog
 
+### 1.1.1:
+
+- Update to FTF 1.2.5
+
 ### 1.1.0:
 
 - Improve form values. Now they don't use value anymore.

@@ -211,6 +211,10 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
+### 1.1.2:
+
+- Solve bug with functions returning undefined.
+
 ### 1.1.1:
 
 - Update README.

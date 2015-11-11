@@ -134,7 +134,11 @@ MeteorFlux.ReactiveState = class ReactiveState {
         let keyPath = [...rootKeyPath];
         keyPath.push(key);
 
-        if (!_.isEqual(oldObj[key], newObj[key])) {
+        // In the case that there is a previous object and the new value is
+        // undefined instead of an object, do nothing.
+        if ((newObj === undefined) && Match.test(oldObj, Object)) {
+          return;
+        } else if (!_.isEqual(oldObj[key], newObj[key])) {
 
           // If they are not equal, the first thing to do it to mark this
           // keyPath as changed to trigger all the Tracker.autoruns.
@@ -149,8 +153,13 @@ MeteorFlux.ReactiveState = class ReactiveState {
             }
             self._changeObj(oldObj[key], newObj[key], keyPath);
 
+          } else if ((newObj[key] === undefined) &&
+                     (Match.test(oldObj[key], Object))) {
+            // If it's undefined and the old value is a an object, do nothing
+            // because maybe it's a function not returning.
+            return;
           } else {
-            // If it's not an object, we just overwrite the value.
+            // If it's not that case, we just overwrite the value.
             oldObj[key] = newObj[key];
           }
         }
