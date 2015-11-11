@@ -36,8 +36,9 @@ livedata@1.0.15
 logging@1.0.8
 meteor@1.1.10
 meteor-base@1.0.1
-meteorflux:first-then-finally@1.2.2
-meteorflux:first-then-finally-blaze@1.2.2
+meteorflux:first-then-finally@1.2.4
+meteorflux:first-then-finally-blaze@1.0.1
+meteorflux:first-then-finally-debug@1.0.0
 meteorflux:namespace@1.0.0
 meteorflux:reactive-state@1.1.1
 minifiers@1.1.7
