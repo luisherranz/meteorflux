@@ -81,9 +81,8 @@ MeteorFlux.FirstThenFinally = class FirstThenFinally {
     if (self.isDispatching()) {
       let newActionType = Match.test(arguments[0], String) ?
         arguments[0] : arguments[0].type;
-      throw new Error('cannot-dispatch-while-dispatching',
-        'Cannot dispatch "' + newActionType + '" while dispatching "' +
-        self._ActionType() + '".');
+      throw new Error('Cannot dispatch "' + newActionType +
+        '" while dispatching "' + self._ActionType() + '".');
     }
 
     // Start Dispatching

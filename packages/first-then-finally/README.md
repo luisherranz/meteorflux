@@ -296,7 +296,7 @@ The concepts behind it are similar, like **Avoid dispathing in the middle of a d
 
 ## Changelog
 
-### 1.2.6:
+### 1.2.7:
 
 - Add action type info to error when dispatching in the middle of another dispatch.
 
