@@ -77,8 +77,14 @@ MeteorFlux.FirstThenFinally = class FirstThenFinally {
     let self = this;
     let payload = null;
 
-    if (self.isDispatching())
-      throw new Error('cant-dispatch-while-dispatching');
+    // Throw if it's already dispatching
+    if (self.isDispatching()) {
+      let newActionType = Match.test(arguments[0], String) ?
+        arguments[0] : arguments[0].type;
+      throw new Error('cannot-dispatch-while-dispatching',
+        'Cannot dispatch "' + newActionType + '" while dispatching "' +
+        self._ActionType() + '".');
+    }
 
     // Start Dispatching
     self._isDispatching = true;

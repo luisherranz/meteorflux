@@ -296,6 +296,10 @@ The concepts behind it are similar, like **Avoid dispathing in the middle of a d
 
 ## Changelog
 
+### 1.2.6:
+
+- Add action type info to error when dispatching in the middle of another dispatch.
+
 ### 1.2.5:
 
 - Update **ReactiveState** to 1.1.2.

@@ -108,7 +108,7 @@ Tinytest.add('FirstThenFinally - Should throw if dispatch while dispatching',
 
     test.throws(() => {
       Dispatch('SOMETHING_HAPPENED');
-    }, 'cant-dispatch-while-dispatching');
+    }, 'cannot-dispatch-while-dispatching');
   }
 );
 
