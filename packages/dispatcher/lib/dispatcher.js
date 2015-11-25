@@ -121,7 +121,9 @@ MeteorFlux.Dispatcher.prototype.dispatch = function(/* arguments */) {
   var payload = arguments;
   for (var i = 0; i < this._dispatchFilters.length; i++) {
     payload = this._dispatchFilters[i].apply(this, payload);
+    if (payload === false) return;
   }
+
   this._startDispatching.apply(this, payload);
   try {
     for (var id in this._callbacks) {
