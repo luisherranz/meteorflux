@@ -4,6 +4,7 @@ Package.describe({
   summary: 'Debug FTF in console.',
   git: 'https://github.com/worona/meteorflux/',
   documentation: null,
+  debugOnly: true
 });
 
 Package.onUse(function(api) {
