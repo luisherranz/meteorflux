@@ -496,6 +496,10 @@ CartFlux is the most complex. It has users accounts, pagination (with *look ahea
 
 # Changelog
 
+### 1.2.1
+
+- Now filters can stop the dispatch if they return false. (Thanks @jreinert!)
+
 ### 1.2.0
 
 - Added filters for both dispatch and register. This is in testing mode yet. Probably not the final implementation.
