@@ -219,6 +219,19 @@ MeteorFlux.ReactiveState = class ReactiveState {
     }
   }
 
+  // This public method gets a keyPath (string or array) and a new value and
+  // stores it in the AppState object tree.
+  modify(keyPath, modifier) {
+    let self = this;
+
+    if (Match.test(modifier, Function)) {
+      keyPath = self._checkKeyPath(keyPath);
+      self._setFunction(keyPath, modifier);
+    } else {
+      throw new Error('Invalid modifier function');
+    }
+  }
+
   // This public method gets a keyPath (string or array) and returns the
   // correct value of the object tree. If a Tracker computation is currently
   // active it will add a dependency.

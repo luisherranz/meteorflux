@@ -812,7 +812,7 @@ Tinytest.add(
   function(test) {
     beforeEach();
 
-    reactiveState.set('a', function(state = 123) {
+    reactiveState.modify('a', function(state = 123) {
       return state;
     });
     test.equal(reactiveState.get('a'), 123);
@@ -826,7 +826,7 @@ Tinytest.add(
 
     var react = new ReactiveVar(false);
 
-    reactiveState.set('a', function(state = false) {
+    reactiveState.modify('a', function(state = false) {
       if (react.get() === true)
         return true;
       else
@@ -852,14 +852,14 @@ Tinytest.add(
     var id = Posts.insert({ title: 'Post 1', url: 'http://blog.com' });
     var react = new ReactiveVar('');
 
-    reactiveState.set('post.isReady', function(state = false) {
+    reactiveState.modify('post.isReady', function(state = false) {
       if (react.get() === id)
         return true;
       else
         return state;
     });
 
-    reactiveState.set('post', function(state = {}) {
+    reactiveState.modify('post', function(state = {}) {
       return Posts.findOne(react.get());
     });
 
@@ -872,6 +872,17 @@ Tinytest.add(
     test.equal(reactiveState.get('post.isReady'), true);
     test.equal(reactiveState.get('post.title'), 'Post 1');
 
+  }
+);
+
+Tinytest.add(
+  'MeteorFlux - ReactiveState -  Modify should throw if not function.',
+  function(test) {
+    beforeEach();
+
+    test.throws(function() {
+      reactiveState.modify('post.isReady', false);
+    }, 'Invalid modifier function');
   }
 );
 

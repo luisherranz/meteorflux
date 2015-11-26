@@ -16,9 +16,7 @@ Just add it to your Meteor project using:
 $ meteor add meteorflux:reactive-state
 ```
 
-
 ## Current API
-
 
 This package and API is currently under development. These are a few examples of what is capable of. Better documentation will come in the future.
 
@@ -27,11 +25,11 @@ This package and API is currently under development. These are a few examples of
 `ReactiveState` works like `ReactiveVar` or `ReactiveDict`. You first have to create a new instance:
 
 ```javascript
-var state = new ReactiveState();
+State = new ReactiveState();
 ```
 
 
-#### state.set(path, value)
+#### State.set(path, value)
 
 You can set and get pretty much anything and it is smart enough to mix everything together and invalidate only what has changed, even with objects, arrays, MiniMongo cursors, or functions returning objects, arrays and MiniMongo cursors.
 
@@ -39,28 +37,28 @@ You can do stuff like this:
 
 ```javascript
 // save plain state, which will become reactive automatically
-state.set('isVideoPlaying', false);
+State.set('isVideoPlaying', false);
 
 // save some state from the database
-state.set('videoList.items', function() {
+State.set('videoList.items', function() {
   return Videos.find({});
 });
 
 // mix new nested state with already defined states
-state.set('videoList.isReady', false);
+State.set('videoList.isReady', false);
 Meteor.subscribe('videos', function(err){
   if (!err) {
-    state.set('videoList.isReady', true);
+    State.set('videoList.isReady', true);
   }
 });
 // or using a reactive function
 var handle = Meteor.subscribe('videos');
-state.set('videoList.isReady', function(){
+State.set('videoList.isReady', function(){
   return !handle.ready();
 });
 
 // save complex objects
-state.set('videoAuthor', {
+State.set('videoAuthor', {
   name: 'Peter'
   image: {
     url: 'http://www.yourserver.com/images/peter.jpg',
@@ -70,11 +68,11 @@ state.set('videoAuthor', {
 });
 
 // mix it with other objects
-state.set('videoAuthor', {
+State.set('videoAuthor', {
   publishedVideos: 12
 }
 // or
-state.set('videoAuthor.publishedVideos', 12);
+State.set('videoAuthor.publishedVideos', 12);
 
 // and so on...
 ```
@@ -82,35 +80,36 @@ state.set('videoAuthor.publishedVideos', 12);
 If the state changes, only the minimum amount of invalidations will occur. For example:
 
 ```javascript
-state.set('videoAuthor', {
+State.set('videoAuthor', {
   image: {
     url: 'http://www.yourserver.com/images/peter2.jpg'
   }
 });
 // or the equivalent...
-state.set('videoAuthor.image.url', 'http://www.yourserver.com/images/peter2.jpg');
+State.set('videoAuthor.image.url', 'http://www.yourserver.com/images/peter2.jpg');
 ```
 
 It won't invalidate things like `videoAuthor.name` or `videoAuthor.image.width`.
 
-You can pass the default state on initialization and old value on next invalidations:
+#### State.modify(path, modifier)
+
+With `State.modify`, you can pass a modifier function which receives the old value as parameter and has to return the new value:
 
 ```javascript
-
-state.set('something', function(state = '') {
+State.modify('something', function(state = '') {
   var postId = FlowRouter.getParam(postId);
   if (postId)
     return postId;
   else
-    return state;
+    return state; // don't change the state, return the same
 });
 ```
 
-You can make state dependent on other state:
+This function is reactive. You can make state dependent on other state:
 
 ```javascript
-state.set('post.isPublished', function(state = false) {
-  var selectedPost = state.get('selectedPost');
+State.modify('post.isPublished', function(state = false) {
+  var selectedPost = State.get('selectedPost');
   var post = Posts.findOne(selectedPost);
   if ((!!post) && (post.published === true))
     return true;
@@ -121,21 +120,19 @@ state.set('post.isPublished', function(state = false) {
 
 Whenever you change `selectedPost`, `post.isPublished` will change as well.
 
-You can pass the old state using
+#### State.get(path)
 
-#### state.get(path)
-
-You can retrieve any value using `state.get`.
+You can retrieve any value using `State.get`.
 
 ```javascript
-state.get('videoList.items');
+State.get('videoList.items');
 // => [{ id: 1, title: 'Video1' }, { id: 2, title: 'Video 2' }];
 
-state.get('videoList.isReady'); // => true or false  
+State.get('videoList.isReady'); // => true or false  
 
-state.get('videoAuthor'); // => { name: 'Peter', image: { url... }, publishedVideos: 12 }
+State.get('videoAuthor'); // => { name: 'Peter', image: { url... }, publishedVideos: 12 }
 
-state.get('videoAuthor.image.width') // => 300
+State.get('videoAuthor.image.width') // => 300
 ```
 
 #### Blaze Global Helpers
@@ -210,6 +207,10 @@ This are some ideas to improve **AppState**. PRs are welcomed.
 Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
+
+### 1.2.0:
+
+- Add `State.modify()` for Redux-style apps.
 
 ### 1.1.2:
 
