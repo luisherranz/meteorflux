@@ -534,6 +534,10 @@ That way, **Stores** can listen to the `LOGIN_FAILED` and `LOGIN_SUCCEED` events
 
 # Changelog
 
+### 1.0.1
+
+- Update ReactiveState to 1.2.0
+
 ### 1.0.0
 
 - First release!

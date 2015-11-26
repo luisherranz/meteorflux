@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:meteorflux',
-  version: '1.0.0',
+  version: '1.0.1',
   summary: 'A Flux framework for extensible Meteor applications',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
@@ -17,7 +17,7 @@ Package.onUse(function(api) {
 
   api.use('meteorflux:namespace@1.0.0');
   api.imply('meteorflux:namespace@1.0.0'); // Exports MeteorFlux
-  api.use('meteorflux:reactive-state@1.1.2');
+  api.use('meteorflux:reactive-state@1.2.0');
   api.addFiles('lib/client/meteorflux.js', 'client');
 
   api.export('Dispatch');
