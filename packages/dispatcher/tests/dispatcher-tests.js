@@ -468,3 +468,26 @@ Tinytest.add('MeteorFlux - Dispatcher - It could register with string as first a
 
     teardown();
 });
+
+Tinytest.add('MeteorFlux - Dispatcher - It should discard dipatches if a dispatch filter returns false', function (test) {
+    setup();
+
+    dispatcher.register('action', callbackA);
+    dispatcher.addDispatchFilter(function (payload) {
+        if (payload.skip === true) {
+            return false;
+        }
+        return [payload];
+    });
+
+    dispatcher.addDispatchFilter(function (payload) {
+        if (payload.abort === true) {
+            return false;
+        }
+        return [payload];
+    })
+    dispatcher.dispatch('action', { some: 'payload' });
+    dispatcher.dispatch('action', { skip: true });
+    dispatcher.dispatch('action', { abort: true });
+    test.equal(callbackA.calls.length, 1);
+});
