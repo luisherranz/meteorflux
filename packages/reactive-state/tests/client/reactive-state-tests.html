@@ -1,83 +1,83 @@
-<template name="undefinedTemplate">
+<template name="reactiveState_undefinedTemplate">
 {{#unless undefined}}Variable is false.{{/unless}}
 </template>
 
-<template name="nestedUndefinedTemplate">
+<template name="reactiveState_nestedUndefinedTemplate">
 {{#unless nested.undefined}}Variable is false.{{/unless}}
 </template>
 
-<template name="stringTemplate">
+<template name="reactiveState_stringTemplate">
 {{#if string}}{{string}} inside a template.{{/if}}
 </template>
 
-<template name="stringTemplate2">
+<template name="reactiveState_stringTemplate2">
 {{#if string2}}{{string2}} inside a template.{{/if}}
 </template>
 
-<template name="nestedStringTemplate">
+<template name="reactiveState_nestedStringTemplate">
 {{nested.string}} inside a template.
 </template>
 
-<template name="numberTemplate">
+<template name="reactiveState_numberTemplate">
 This is {{number}}.
 </template>
 
-<template name="booleanTemplate">
+<template name="reactiveState_booleanTemplate">
 This is {{boolean}}.
 </template>
 
-<template name="authorTemplate">
+<template name="reactiveState_authorTemplate">
 His name is {{author.name}}.
 </template>
 
-<template name="authorTemplate2">
+<template name="reactiveState_authorTemplate2">
 {{#with author}}His name is {{name}}.{{/with}}
 </template>
 
-<template name="authorNestedTemplate">
-{{#with author}}{{> authorChildTemplate}}{{/with}}
+<template name="reactiveState_authorNestedTemplate">
+{{#with author}}{{> reactiveState_authorChildTemplate}}{{/with}}
 </template>
 
-<template name="authorChildTemplate">
+<template name="reactiveState_authorChildTemplate">
 His name is {{name}}.
 </template>
 
-<template name="authorTemplate3">
+<template name="reactiveState_authorTemplate3">
 His name is {{author.name}} and his age is {{author.age}}.
 </template>
 
-<template name="authorTemplate4">
+<template name="reactiveState_authorTemplate4">
 {{#with author}}His name is {{name}} and his age is {{age}}.{{/with}}
 </template>
 
-<template name="authorTemplate5">
+<template name="reactiveState_authorTemplate5">
 His name is {{post.author.name}}.
 </template>
 
-<template name="authorTemplate6">
+<template name="reactiveState_authorTemplate6">
 {{#with post}}His name is {{author.name}}.{{/with}}
 </template>
 
-<template name="authorTemplate7">
+<template name="reactiveState_authorTemplate7">
 His name is {{post.author.name}} and his age is {{post.author.age}}.
 </template>
 
-<template name="authorTemplate8">
+<template name="reactiveState_authorTemplate8">
 {{#with post}}His name is {{author.name}} and his age is {{author.age}}.{{/with}}
 </template>
 
-<template name="postTemplate1">
+<template name="reactiveState_postTemplate1">
 {{#each posts}}Post title is {{title}}. {{/each}}
 </template>
 
-<template name="postTemplate2">
+<template name="reactiveState_postTemplate2">
 {{#if post.isReady}}Post title is {{post.title}} and url is {{post.url}}.{{/if}}
 </template>
 
-<template name="postTemplate3">
+<template name="reactiveState_postTemplate3">
 {{#with post}}{{#if isReady}}Post title is {{title}} and url is {{url}}.{{/if}}{{/with}}
 </template>
 
-<template name="postTemplate4">
+<template name="reactiveState_postTemplate4">
 {{#if posts.isReady}}{{#each posts.items}}Post title is {{title}} and url is {{url}}. {{/each}}{{/if}}
 </template>
