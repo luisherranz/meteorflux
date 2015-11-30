@@ -1,7 +1,7 @@
 Package.describe({
   name: 'meteorflux:first-then-finally',
-  version: '1.2.7',
-  summary: 'A Flux framework for extensible Meteor applications',
+  version: '1.2.8',
+  summary: 'DEPRECATED - Use MeteorFlux instead.',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
 });

@@ -1,7 +1,7 @@
 Package.describe({
   name: 'meteorflux:first-then-finally-debug',
-  version: '1.0.1',
-  summary: 'Debug FTF in console.',
+  version: '1.0.2',
+  summary: 'DEPRECATED - Use MeteorFlux instead',
   git: 'https://github.com/worona/meteorflux/',
   documentation: null,
   debugOnly: true
