@@ -1,7 +1,7 @@
 Package.describe({
   name: 'meteorflux:appstate',
-  version: '1.2.2',
-  summary: 'AppState is a reactive object tree for Meteor',
+  version: '1.2.3',
+  summary: 'DEPRECATED - Use ReactiveState instead.',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
 });
