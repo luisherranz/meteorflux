@@ -1,6 +1,8 @@
 Meteor.startup(() => {
-  Register(() => {
-    console.log("==> \"" + Action.type() + "\"");
-    console.log(_.omit(Action, _.functions(Action)));
-  });
+  if (typeof Register !== "undefined") {
+    Register(() => {
+      console.log("==> \"" + Action.type() + "\"");
+      console.log(_.omit(Action, _.functions(Action)));
+    });
+  }
 });

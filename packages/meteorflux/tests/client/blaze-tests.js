@@ -1,14 +1,14 @@
 var beforeEach = function() {
-  BlazeEvents = new MeteorFlux.BlazeEvents();
+  BlazeEvents = new MeteorFlux.BlazeEvents(MF);
 };
 
 Tinytest.add(
   'BlazeEvents - _dispatch tests',
-  function(test) {
+  sinon.test(function(test) {
     beforeEach();
 
     // Data going in.
-    var that = { someData: 'data' };
+    var that = { someData: 'data', dispatch: MF.Dispatch.bind(MF) };
     var event = {
       preventDefault: function() {},
       stopImmediatePropagation: function() {},
@@ -41,14 +41,12 @@ Tinytest.add(
     };
 
     var result = null;
-    var type = null;
-    First(function(){
-      type = Action.type();
+    Register(() => {
       result = Action.payload();
     });
 
     BlazeEvents._dispatch.call(that, event, template);
 
     test.equal(result, payload);
-  }
+  })
 );

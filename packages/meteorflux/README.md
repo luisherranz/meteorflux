@@ -761,6 +761,10 @@ That way, **Stores** can listen to the `LOGIN_FAILED` and `LOGIN_SUCCEED` events
 
 # Changelog
 
+### 1.1.1
+
+- Add templating package
+
 ### 1.1.0
 
 - Add Blaze Events

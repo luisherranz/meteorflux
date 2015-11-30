@@ -9,6 +9,7 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2');
+  api.use('check');
   api.addFiles('debug.js', 'client');
 });
 

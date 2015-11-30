@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:meteorflux',
-  version: '1.1.0',
+  version: '1.1.1',
   summary: 'A Flux framework for extensible Meteor applications',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
@@ -34,7 +34,9 @@ Package.onTest(function(api) {
   api.use('ecmascript');
   api.use('reactive-var');
   api.use('tracker');
+  api.use('blaze-html-templates');
   api.use('meteorflux:meteorflux');
+  api.use('practicalmeteor:sinon@1.14.1_2');
   api.addFiles('tests/client/meteorflux-tests.js', 'client');
   api.addFiles('tests/client/blaze-tests.js', 'client');
 });

@@ -19,7 +19,3 @@ ecmascript              # Enable ECMAScript2015+ syntax in app code
 
 insecure
 autopublish
-
-meteorflux:first-then-finally
-meteorflux:first-then-finally-blaze
-meteorflux:first-then-finally-debug
