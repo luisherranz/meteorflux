@@ -60,12 +60,12 @@ Tinytest.add(
 
     Dispatcher.dispatch('SOMETHING_HAPPENED');
     test.equal(AppState.get('string'), 'I am a string');
-    test.equal(Blaze.toHTML(Template.stringTemplate),
+    test.equal(Blaze.toHTML(Template.appstate_stringTemplate),
       'I am a string inside a template.');
 
     Dispatcher.dispatch('OTHER_THING_HAPPENED');
     test.isFalse(AppState.get('string'));
-    test.equal(Blaze.toHTML(Template.stringTemplate), '');
+    test.equal(Blaze.toHTML(Template.appstate_stringTemplate), '');
 
   }
 );
