@@ -1,5 +1,7 @@
 # MeteorFlux - a reactive Flux framework
 
+[![Build Status](https://travis-ci.org/worona/meteorflux.svg?branch=devel)](https://travis-ci.org/worona/meteorflux)
+
 *MeteorFlux was created and is actively maintained by [@luisherranz](https://github.com/LuisHerranz) from [@worona](https://github.com/worona).*
 
 After a lot of work figuring out how to use **Flux** and **Meteor** together, we have come up with **MeteorFlux**, a complete framework for creating **simple, scalable and reactive** apps in **Meteor** under the **Flux principles**.
@@ -427,6 +429,188 @@ AfterAction(() => {
 });
 ```
 
+## Blaze Events
+
+If you use Blaze you can dispatch directly from your html.
+
+In your HTML code add `dispatch` to any `a`, `button` or `form`.
+
+```html
+<a href='#' dispatch='SOMETHING_HAPPENED'>Something!</a>
+<!-- or -->
+<button dispatch='BUTTON_PUSHED'>Something!</button>
+<!-- or -->
+<form dispatch='FORM_SENT'>
+  <input type="text" name="username">
+  <input type="submit" name="Send!">
+</form>
+```
+
+It will send a **Flux** action with a payload like this:
+
+```javascript
+{
+  type: 'SOMETHING_HAPPENED',
+  context: // the data context. Equivalent to 'this'.
+  event: // the event which triggered the action.
+  template: // the template in where the action was triggered.
+}
+```
+
+### Blaze Data context
+
+If you use it inside a `{{#with}}` or a `{{#each}}` block, you will get the data context in `context`.
+
+```html
+{{#each posts}}
+  <h1>{{title}}</h1>
+  <p>{{content}}</p>
+  {{#if favorite}}
+    <button dispatch='UNFAVORITE_THIS_POST'>Remove from favorites!</button>
+  {{else}}
+    <button dispatch='FAVORITE_THIS_POST'>Add to favorites!</button>
+  {{/if}}
+{{/each}}
+```
+
+You will get the post `_id` inside `context`:
+
+```javascript
+Register(funciton() {
+  switch(Action.type()) {
+  case 'FAVORITE_THIS_POST':
+    var postId = Action.context._id;
+    Posts.update(postId, { $set: { favorite: true } } );
+    break;
+  case 'UNFAVORITE_THIS_POST':
+    var postId = Action.context._id;
+    Posts.update(postId, { $set: { favorite: false } } );
+    break;
+  }
+});
+```
+
+If you dispatch the same action from javascript, remember you still have to use `context`, so it is compatible with the helper. For example:
+
+```javascript
+
+var post = Posts.findOne();
+
+Dispatch('FAVORITE_THIS_POST', { context: { _id: post._id } });
+
+```
+
+If you don't like this behavior, pass the data you need instead.
+
+### Passing other data
+
+You can pass other data using the data attribute `data-key`. For example:
+
+```html
+<span>Software Version: {{softwareVersion}}</span>
+<button dispatch='INCREASE_VERSION' data-version={{softwareVersion}}>
+    Increase version
+</button>
+```
+
+And it will be passed in the `payload` like this:
+
+```javascript
+{
+  type: 'INCREASE_VERSION',
+  version: 1.2.0 // the value of {{softwareVersion}}
+  context: // the data context. Equivalent to 'this'.
+  event: // the event which triggered the action.
+  template: // the template in where the action was triggered.
+}
+```
+
+*The key of `data-key` has to be different than `type`, `context`, `event` and `template`.*
+
+If the key has hyphens, it will convert it to camelcase. For example, `data-user-name` will be converted to `userName`.
+
+---
+
+It's probably a good idea to pass the `_id` of the context whenever you can, instead of relaying on `context._id`.
+
+For example:
+
+```html
+{{#each posts}}
+  <h1>{{title}}</h1>
+  <p>{{content}}</p>
+  {{#if favorite}}
+    <button
+      dispatch='UNFAVORITE_THIS_POST'
+      data-id={{_id}}>
+      Remove from favorites!
+    </button>
+  {{else}}
+  <button
+    dispatch='FAVORITE_THIS_POST'
+    data-id={{_id}}>
+    Add to favorites!
+  </button>
+  {{/if}}
+{{/each}}
+```
+
+And your callback would be:
+
+```javascript
+Register(funciton() {
+  switch(Action.type()) {
+  case 'FAVORITE_THIS_POST':
+    Posts.update(Action.id, { $set: { favorite: true } } );
+    break;
+  case 'UNFAVORITE_THIS_POST':
+    Posts.update(Action.id, { $set: { favorite: false } } );
+    break;
+  }
+});
+```
+
+This would make your actions more reusable.
+
+### Blaze template object
+
+Like in normal Meteor events, you can access the template using `Action.template`.
+
+### Blaze event object
+
+Like in normal Meteor events, you can access the event which triggered the action with `Action.event`.
+
+### Form data
+
+Like in normal Meteor events, you can get the form values in `event.currentTarget.name-of-the-input.value`.
+
+But you can access them as well in the `payload`. For example:
+```html
+<body>
+  <form dispatch='SOMETHING_HAPPENED'>
+    <input type="text" name="text" value="Text Example">
+    <input type="submit" name="submit" value="Submit">
+    <input type="checkbox" name="vehicle1" value="Bike">I have a bike<br>
+    <input type="checkbox" name="vehicle2" value="Car" checked> I have a car<br>
+    <input type="radio" name="gender" value="Male"><br>
+    <input type="radio" name="gender" value="Female" checked><br>
+  </form>
+</body>
+```
+It will have this `payload`:
+```javascript
+{
+  type: 'INCREASE_VERSION',
+  text: 'Text Example', // Value for input with name 'text'
+  vehicle1: false, // Checked for checkbox with name 'vehicle1'
+  vehicle2: true, // Checked for checkbox with name 'vehicle2'
+  gender: 'Female' // Value for checked radio with name 'gender'
+  context: {...}, // the data context. Equivalent to 'this'.
+  event: {...}, // the event which triggered the action.
+  template: {...} // the template in where the action was triggered.
+}
+```
+
 ## Use everything together
 
 If you understand this example, then you are probably good to go!
@@ -443,6 +627,11 @@ Register(() => {
   }
 });
 
+let handle = Meteor.subscribe('cart');
+State.modify('Cart.isReady', (state = false) => {
+  return (!!handle && handle.ready());
+});
+
 State.modify('Cart.items', (state = []) => {
   switch (Action.type()) {
     case 'CART_FILTERED':
@@ -452,6 +641,10 @@ State.modify('Cart.items', (state = []) => {
     default:
       return state;
   }
+});
+
+State.modify('Category.items', (state = []) => {
+  return Categories.find();
 });
 
 State.modify('Cart.selectedItem', (state = false) => {
@@ -470,8 +663,42 @@ AfterAction(() => {
     let productName = State.get('Cart.selectedItem.name');
     Analytics.track('User Selected Product', { productName });
 });
-
 ```
+HTML:
+```html
+{{#if Cart.isReady}}
+  <div>Filter by category</div>
+  <ul>
+    <li>
+      <a href="#" dispatch="CART_NOT_FILTERED">Remove filter</a>
+    </li>
+    {{#each Category.items}}
+      <li>
+        <a href="#" dispatch="CART_FILTERED" data-category={{name}}>{{name}}</a>
+      </li>
+    {{/each}}
+  </ul>
+
+  {{#each Cart.items}}
+    <button dispatch="PRODUCT_SELECTED" data-id={{_id}}>Select</button>
+    <div>{{name}}</div>
+    <div>{{price}}</div>
+  {{/each}}
+
+  <div>
+    {{#with Cart.selectedItem}}
+      <div>{{name}}</div>
+      <button dispatch="PRODUCT_REMOVED_FROM_CART" data-id={{_id}}>Remove</button>
+    {{else}}
+      No product selected...
+    {{/with}}
+  </div>
+{{else}}
+  <div>Loading...</div>
+{{/if}}
+```
+
+For most of the things you don't need helpers or events.
 
 ## Other utils
 
@@ -533,6 +760,12 @@ Template.LoginForm.events({
 That way, **Stores** can listen to the `LOGIN_FAILED` and `LOGIN_SUCCEED` events and act accordingly.
 
 # Changelog
+
+### 1.1.0
+
+- Add Blaze Events
+- Add console debug (development only)
+- Add Travis badge
 
 ### 1.0.1
 
