@@ -3,8 +3,6 @@ MeteorFlux.BlazeEvents = class BlazeEvents {
     let self = this;
     if ((typeof Blaze !== 'undefined') && (typeof Blaze !== 'undefined'))
       self._createGlobalEvents();
-    self.dispatch = (typeof mf === 'undefined') ?
-      Dispatch : mf.Dispatch.bind(mf);
   }
 
   _createGlobalEvents() {
@@ -52,7 +50,7 @@ MeteorFlux.BlazeEvents = class BlazeEvents {
       }));
 
     _.extend(action, dataSet, formFields);
-    self.dispatch(action);
+    return Dispatch(action);
   }
 };
 

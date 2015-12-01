@@ -41,8 +41,12 @@ Tinytest.add(
     };
 
     var result = null;
-    Register(() => {
-      result = Action.payload();
+    // get the inner dispatcher used
+    var mf = BlazeEvents._dispatch.call(that, event, template);
+    Tracker.flush();
+
+    mf.Register(function() {
+      result = mf.Action.payload();
     });
 
     BlazeEvents._dispatch.call(that, event, template);

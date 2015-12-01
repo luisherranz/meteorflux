@@ -759,6 +759,10 @@ Template.LoginForm.events({
 
 That way, **Stores** can listen to the `LOGIN_FAILED` and `LOGIN_SUCCEED` events and act accordingly.
 
+## Debugging
+
+Knowing what's happening in **Flux** is important. This framework comes with default console messages each time an **Action** is dispatched. They are `debugOnly` so don't worry, it won't happen in your app once it is on production.
+
 # Changelog
 
 ### 1.1.1
