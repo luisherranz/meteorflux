@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:meteorflux',
-  version: '1.1.1',
+  version: '1.1.2',
   summary: 'A Flux framework for extensible Meteor applications',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
