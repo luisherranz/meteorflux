@@ -120,6 +120,16 @@ State.modify('post.isPublished', function(state = false) {
 
 Whenever you change `selectedPost`, `post.isPublished` will change as well.
 
+You can use other classes:
+
+```javascript
+State.modify('user', function(state = {}) {
+  let user = new User();
+  user.name = 'john';
+  return user;
+});
+```
+
 #### State.get(path)
 
 You can retrieve any value using `State.get`.
@@ -133,6 +143,8 @@ State.get('videoList.isReady'); // => true or false
 State.get('videoAuthor'); // => { name: 'Peter', image: { url... }, publishedVideos: 12 }
 
 State.get('videoAuthor.image.width') // => 300
+
+State.get('user.greet') // => hi john!
 ```
 
 #### Blaze Global Helpers
@@ -207,6 +219,10 @@ This are some ideas to improve **AppState**. PRs are welcomed.
 Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
+
+### 1.3.0:
+
+- More improvements on non-plain-objects. Now it works with things like Astronomy and you can even use functions from Blaze.
 
 ### 1.2.1:
 

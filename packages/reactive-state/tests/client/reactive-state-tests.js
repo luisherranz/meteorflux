@@ -934,6 +934,72 @@ Tinytest.add(
   }
 );
 
+Tinytest.add(
+  'ReactiveState -  Should allow functions inside not plain objects.',
+  function(test) {
+    beforeEach();
+
+    var SomeClass = function() {
+      this.prop = 'prop!';
+    };
+    SomeClass.prototype.greet = function() {
+      return 'hi!';
+    };
+
+    reactiveState.modify('instance', (state = new SomeClass()) => {
+      return state;
+    });
+
+    test.equal(reactiveState.get('instance').greet(), 'hi!');
+    test.equal(reactiveState.get('instance.greet'), 'hi!');
+    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate3),
+      'hi!');
+  }
+);
+
+Tinytest.add(
+  'ReactiveState -  Should allow functions with params in not plain objects.',
+  function(test) {
+    beforeEach();
+
+    var SomeClass = function() {
+      this.prop = 'prop!';
+    };
+    SomeClass.prototype.greet = function(name) {
+      return 'hi ' + name + '!';
+    };
+
+    reactiveState.modify('instance', (state = new SomeClass()) => {
+      return state;
+    });
+
+    test.equal(reactiveState.get('instance').greet('john'), 'hi john!');
+  }
+);
+
+Tinytest.add(
+  'ReactiveState -  Should allow functions using this in not plain objects.',
+  function(test) {
+    beforeEach();
+
+    var SomeClass = function() {
+      this.name = 'john';
+    };
+    SomeClass.prototype.greet = function() {
+      return 'hi ' + this.name + '!';
+    };
+
+    reactiveState.modify('instance', (state = new SomeClass()) => {
+      return state;
+    });
+
+    test.equal(reactiveState.get('instance').greet(), 'hi john!');
+    test.equal(reactiveState.get('instance.greet'), 'hi john!');
+    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate3),
+      'hi john!');
+  }
+);
+
 // Won't fix for now, until we see if this is really important.
 // Tinytest.add(
 //   'ReactiveState -  Should stop a computation not used anymore.',

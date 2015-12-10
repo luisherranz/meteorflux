@@ -133,41 +133,43 @@ MeteorFlux.ReactiveState = class ReactiveState {
     let self = this;
 
     for (let key in newObj) {
-      if (newObj.hasOwnProperty(key)) {
+      // We need to clone the array so we don't modify the rootKeyPath and
+      // it is still valid in the next for iteration.
+      let keyPath = [...rootKeyPath];
+      keyPath.push(key);
 
-        // We need to clone the array so we don't modify the rootKeyPath and
-        // it is still valid in the next for iteration.
-        let keyPath = [...rootKeyPath];
-        keyPath.push(key);
+      // In the case that there is a previous object and the new value is
+      // undefined instead of an object, do nothing.
+      if ((newObj === undefined) && Match.test(oldObj, self._isObject)) {
+        return;
+      } else if (!_.isEqual(oldObj[key], newObj[key])) {
 
-        // In the case that there is a previous object and the new value is
-        // undefined instead of an object, do nothing.
-        if ((newObj === undefined) && Match.test(oldObj, self._isObject)) {
-          return;
-        } else if (!_.isEqual(oldObj[key], newObj[key])) {
+        // If they are not equal, the first thing to do it to mark this
+        // keyPath as changed to trigger all the Tracker.autoruns.
+        self._changeDep(keyPath);
 
-          // If they are not equal, the first thing to do it to mark this
-          // keyPath as changed to trigger all the Tracker.autoruns.
-          self._changeDep(keyPath);
+        // Check if it is an object
+        if (Match.test(newObj[key], self._isObject)) {
 
-          // Check if it is an object
-          if (Match.test(newObj[key], self._isObject)) {
-
-            // Both are objects, use _changeObj again.
-            if (!Match.test(oldObj[key], self._isObject)) {
-              oldObj[key] = {};
-            }
-            self._changeObj(oldObj[key], newObj[key], keyPath);
-
-          } else if ((newObj[key] === undefined) &&
-                     (Match.test(oldObj[key], self._isObject))) {
-            // If it's undefined and the old value is a an object, do nothing
-            // because maybe it's a function not returning.
-            return;
-          } else {
-            // If it's not that case, we just overwrite the value.
-            oldObj[key] = newObj[key];
+          // If oldObj is not an object, make a new one so we can merge both.
+          if (!Match.test(oldObj[key], self._isObject)) {
+            oldObj[key] = {};
           }
+
+          // Now both are objects, use _changeObj again.
+          self._changeObj(oldObj[key], newObj[key], keyPath);
+
+        } else if ((newObj[key] === undefined) &&
+                   (Match.test(oldObj[key], self._isObject))) {
+          // If it's undefined and the old value is a an object, do nothing
+          // because maybe it's a function not returning.
+          return;
+        } else if (Match.test(newObj[key], Function)) {
+          // If the newObj is a function, we bind it to the newObj
+          oldObj[key] = _.bind(newObj[key], newObj);
+        } else {
+          // If it's not that case, we just overwrite the value.
+          oldObj[key] = newObj[key];
         }
       }
     }
@@ -252,6 +254,9 @@ MeteorFlux.ReactiveState = class ReactiveState {
       value = value.array;
       _.extend(value, _.omit(oldValue, 'array'));
     }
+
+    if (Match.test(value, Function))
+      value = value();
 
     if (Tracker.active) {
       self._addDep(keyPath, value);
