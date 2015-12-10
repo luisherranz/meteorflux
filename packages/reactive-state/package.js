@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:reactive-state',
-  version: '1.3',
+  version: '1.3.0',
   summary: 'ReactiveState is a reactive object to save complex state data.',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
