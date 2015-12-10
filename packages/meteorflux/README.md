@@ -765,6 +765,10 @@ Knowing what's happening in **Flux** is important. This framework comes with def
 
 # Changelog
 
+### 1.1.4
+
+- Update to ReactiveState 1.3.0
+
 ### 1.1.3
 
 - Update to ReactiveState 1.2.1
