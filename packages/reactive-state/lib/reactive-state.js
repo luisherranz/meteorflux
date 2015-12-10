@@ -144,11 +144,10 @@ MeteorFlux.ReactiveState = class ReactiveState {
   _changeObj(oldObj, newObj, rootKeyPath = []) {
     let self = this;
 
-    _.each(_.allKeys(newObj), key => {
+    _.each(_.without(_.allKeys(newObj), 'constructor'), key => {
       // We need to clone the array so we don't modify the rootKeyPath and
       // it is still valid in the next for iteration.
-      let keyPath = [...rootKeyPath];
-      keyPath.push(key);
+      let keyPath = [...rootKeyPath, key];
 
       // In the case that there is a previous object and the new value is
       // undefined instead of an object, do nothing.

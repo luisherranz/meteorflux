@@ -220,7 +220,7 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
-### 1.3.1:
+### 1.3.2:
 
 - Fix problem with object.hasOwnProperties. Now using the better `_.allKeys()`;
 
