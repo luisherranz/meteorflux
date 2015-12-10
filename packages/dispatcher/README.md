@@ -2,6 +2,8 @@
 
 *MeteorFlux is developed and maintained by [@luisherranz](https://github.com/LuisHerranz) from [@worona](https://github.com/worona)*.
 
+****If you are interested in using Flux and Meteor, you can check our new [reactive MeteorFlux framework](https://github.com/worona/meteorflux) instead of this non-reactive Dispatcher.**
+
 ### What is Flux and why do I need it?
 
 Most people using Meteor today come from creating *"server side"* or *"page based"* websites. The user asks for a url and the server returns the correct page. MVC is great with that.
@@ -495,6 +497,10 @@ I have created three examples:
 CartFlux is the most complex. It has users accounts, pagination (with *look ahead* subscriptions), routing and testing. If you feel like reading more about it you can do so in [this  thread](https://forums.meteor.com/t/meteorflux-flow/920) of the Meteor forums. Be aware, it's a very long thread :)
 
 # Changelog
+
+### 1.2.2
+
+- Add notice to redirect people to the new framework.
 
 ### 1.2.1
 
