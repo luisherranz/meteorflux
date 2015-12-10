@@ -1,3 +1,15 @@
+// Retrieve all the property names of an object. Mising in Meteor's underscore.
+_.allKeys = function(obj) {
+  if (!_.isObject(obj)) return [];
+  var keys = [];
+  for (var key in obj) keys.push(key);
+  // Ahem, IE < 9.
+  if (hasEnumBug) collectNonEnumProps(obj, keys);
+  return keys;
+};
+// Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
+var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
+
 MeteorFlux.ReactiveState = class ReactiveState {
   constructor() {
     let self = this;
@@ -132,7 +144,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
   _changeObj(oldObj, newObj, rootKeyPath = []) {
     let self = this;
 
-    for (let key in newObj) {
+    _.each(_.allKeys(newObj), key => {
       // We need to clone the array so we don't modify the rootKeyPath and
       // it is still valid in the next for iteration.
       let keyPath = [...rootKeyPath];
@@ -172,7 +184,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
           oldObj[key] = newObj[key];
         }
       }
-    }
+    });
   }
 
   // This function takes a path (string) and registers it as a Blaze helper.

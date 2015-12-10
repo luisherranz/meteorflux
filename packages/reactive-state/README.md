@@ -220,6 +220,10 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
+### 1.3.1:
+
+- Fix problem with object.hasOwnProperties. Now using the better `_.allKeys()`;
+
 ### 1.3.0:
 
 - More improvements on non-plain-objects. Now it works with things like Astronomy and you can even use functions from Blaze.
