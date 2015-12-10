@@ -765,6 +765,10 @@ Knowing what's happening in **Flux** is important. This framework comes with def
 
 # Changelog
 
+### 1.1.3
+
+- Update to ReactiveState 1.2.1
+
 ### 1.1.2
 
 - Fix blaze self.dispatch bug
