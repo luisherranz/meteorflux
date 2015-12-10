@@ -81,3 +81,11 @@ His name is {{post.author.name}} and his age is {{post.author.age}}.
 <template name="reactiveState_postTemplate4">
 {{#if posts.isReady}}{{#each posts.items}}Post title is {{title}} and url is {{url}}. {{/each}}{{/if}}
 </template>
+
+<template name="reactiveState_instanceTemplate">
+{{instance.prop}}
+</template>
+
+<template name="reactiveState_instanceTemplate2">
+{{instance.otherProp}}
+</template>

@@ -1,15 +1,14 @@
-let beforeEach = () => {
-  reactiveState = new ReactiveState();
+/* jshint -W106 */
+let beforeEach = () => { reactiveState = new ReactiveState();
   Blaze._globalHelpers = [];
 };
 
 
-Tinytest.add('MeteorFlux - ReactiveState - Test internal _checkKeyPath function',
+Tinytest.add('ReactiveState - Test internal _checkKeyPath function',
   function (test) {
     beforeEach();
 
     test.throws(reactiveState._checkKeyPath, undefined);
-
     test.equal(
       reactiveState._checkKeyPath('a'),
       ['a']
@@ -27,7 +26,7 @@ Tinytest.add('MeteorFlux - ReactiveState - Test internal _checkKeyPath function'
   }
 );
 
-Tinytest.add('MeteorFlux - ReactiveState - Test internal _getValueInPath function',
+Tinytest.add('ReactiveState - Test internal _getValueInPath function',
   function (test) {
     beforeEach();
 
@@ -78,7 +77,7 @@ Tinytest.add('MeteorFlux - ReactiveState - Test internal _getValueInPath functio
   }
 );
 
-Tinytest.add('MeteorFlux - ReactiveState - Test internal _addDep function',
+Tinytest.add('ReactiveState - Test internal _addDep function',
   function (test) {
     beforeEach();
 
@@ -97,7 +96,7 @@ Tinytest.add('MeteorFlux - ReactiveState - Test internal _addDep function',
   }
 );
 
-Tinytest.add('MeteorFlux - ReactiveState - Test internal _createObjFromValue func',
+Tinytest.add('ReactiveState - Test internal _createObjFromValue func',
   function (test) {
     beforeEach();
 
@@ -118,7 +117,7 @@ Tinytest.add('MeteorFlux - ReactiveState - Test internal _createObjFromValue fun
   }
 );
 
-Tinytest.add('MeteorFlux - ReactiveState - Test internal _keyPathToString func',
+Tinytest.add('ReactiveState - Test internal _keyPathToString func',
   function (test) {
     beforeEach();
 
@@ -130,7 +129,7 @@ Tinytest.add('MeteorFlux - ReactiveState - Test internal _keyPathToString func',
 );
 
 
-Tinytest.add('MeteorFlux - ReactiveState - Set string',
+Tinytest.add('ReactiveState - Set string',
   function (test) {
     beforeEach();
 
@@ -139,7 +138,7 @@ Tinytest.add('MeteorFlux - ReactiveState - Set string',
   }
 );
 
-Tinytest.add('MeteorFlux - ReactiveState - Set nested string with array',
+Tinytest.add('ReactiveState - Set nested string with array',
   function (test) {
     beforeEach();
 
@@ -148,7 +147,7 @@ Tinytest.add('MeteorFlux - ReactiveState - Set nested string with array',
   }
 );
 
-Tinytest.add('MeteorFlux - ReactiveState - Set nested string with string',
+Tinytest.add('ReactiveState - Set nested string with string',
   function (test) {
     beforeEach();
 
@@ -157,7 +156,7 @@ Tinytest.add('MeteorFlux - ReactiveState - Set nested string with string',
   }
 );
 
-Tinytest.add('MeteorFlux - ReactiveState - Set two nested strings',
+Tinytest.add('ReactiveState - Set two nested strings',
   function (test) {
     beforeEach();
 
@@ -171,7 +170,7 @@ Tinytest.add('MeteorFlux - ReactiveState - Set two nested strings',
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - If the state is undefined it returns undefined.',
+  'ReactiveState - If the state is undefined it returns undefined.',
 
   function(test) {
     beforeEach();
@@ -183,7 +182,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - If the state is undefined it is still reactive.',
+  'ReactiveState - If the state is undefined it is still reactive.',
 
   function(test) {
     beforeEach();
@@ -203,7 +202,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - If state is undefined returns undef even if nested',
+  'ReactiveState - If state is undefined returns undef even if nested',
 
   function(test) {
     beforeEach();
@@ -215,7 +214,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get strings',
+  'ReactiveState - Set and get strings',
 
   function(test) {
     beforeEach();
@@ -228,7 +227,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get nested strings',
+  'ReactiveState - Set and get nested strings',
 
   function(test) {
     beforeEach();
@@ -241,7 +240,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get strings reactively',
+  'ReactiveState - Set and get strings reactively',
 
   function(test) {
     beforeEach();
@@ -260,7 +259,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get strings reactively only in template',
+  'ReactiveState - Set and get strings reactively only in template',
 
   function(test) {
     beforeEach();
@@ -274,7 +273,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get nested strings reactively',
+  'ReactiveState - Set and get nested strings reactively',
 
   function(test) {
     beforeEach();
@@ -292,7 +291,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get numbers',
+  'ReactiveState - Set and get numbers',
 
   function(test) {
     beforeEach();
@@ -305,7 +304,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get numbers reactively',
+  'ReactiveState - Set and get numbers reactively',
 
   function(test) {
     beforeEach();
@@ -323,7 +322,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get booleans',
+  'ReactiveState - Set and get booleans',
 
   function(test) {
     beforeEach();
@@ -336,7 +335,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get booleans reactively',
+  'ReactiveState - Set and get booleans reactively',
 
   function(test) {
     beforeEach();
@@ -354,7 +353,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get objects',
+  'ReactiveState - Set and get objects',
 
   function(test) {
     beforeEach();
@@ -372,7 +371,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get objects in nested templates',
+  'ReactiveState - Set and get objects in nested templates',
 
   function(test) {
     beforeEach();
@@ -384,7 +383,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get objects reactively',
+  'ReactiveState - Set and get objects reactively',
 
   function(test) {
     beforeEach();
@@ -409,7 +408,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get functions',
+  'ReactiveState - Set and get functions',
 
   function(test) {
     beforeEach();
@@ -429,7 +428,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get functions reactively',
+  'ReactiveState - Set and get functions reactively',
 
   function(test) {
     beforeEach();
@@ -456,7 +455,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get combined objects',
+  'ReactiveState - Set and get combined objects',
 
   function(test) {
     beforeEach();
@@ -477,7 +476,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get combined objects reactively',
+  'ReactiveState - Set and get combined objects reactively',
 
   function(test) {
     beforeEach();
@@ -510,7 +509,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get combined objects and data',
+  'ReactiveState - Set and get combined objects and data',
 
   function(test) {
     beforeEach();
@@ -531,7 +530,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get combined functions',
+  'ReactiveState - Set and get combined functions',
 
   function(test) {
     beforeEach();
@@ -556,7 +555,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get combined functions with data',
+  'ReactiveState - Set and get combined functions with data',
 
   function(test) {
     beforeEach();
@@ -580,7 +579,7 @@ Tinytest.add(
 
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get deep functions',
+  'ReactiveState - Set and get deep functions',
 
   function(test) {
     beforeEach();
@@ -600,7 +599,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get deep combined functions',
+  'ReactiveState - Set and get deep combined functions',
 
   function(test) {
     beforeEach();
@@ -625,7 +624,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set and get arrays',
+  'ReactiveState - Set and get arrays',
 
   function(test) {
     beforeEach();
@@ -640,7 +639,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set different fields on objects',
+  'ReactiveState - Set different fields on objects',
 
   function(test) {
     beforeEach();
@@ -663,7 +662,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set different fields on cursors',
+  'ReactiveState - Set different fields on cursors',
 
   function(test) {
     beforeEach();
@@ -691,7 +690,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set different fields on cursors reactively',
+  'ReactiveState - Set different fields on cursors reactively',
 
   function(test) {
     beforeEach();
@@ -724,7 +723,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState - Set different fields on cursors reactively in ' +
+  'ReactiveState - Set different fields on cursors reactively in ' +
   'inverse order',
 
   function(test) {
@@ -758,7 +757,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState -  Throws if the keyPath is undefined',
+  'ReactiveState -  Throws if the keyPath is undefined',
   function(test) {
     beforeEach();
 
@@ -768,7 +767,7 @@ Tinytest.add(
 
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState -  Reactivity using nested objects.',
+  'ReactiveState -  Reactivity using nested objects.',
   function(test) {
     beforeEach();
 
@@ -783,7 +782,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState -  Object with array inside.',
+  'ReactiveState -  Object with array inside.',
   function(test) {
     beforeEach();
 
@@ -796,7 +795,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState -  Should save a function returning null.',
+  'ReactiveState -  Should save a function returning null.',
   function(test) {
     beforeEach();
 
@@ -808,7 +807,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState -  Should get a paramter with state default.',
+  'ReactiveState -  Should get a paramter with state default.',
   function(test) {
     beforeEach();
 
@@ -820,7 +819,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState -  Should get a paramter with old state value.',
+  'ReactiveState -  Should get a paramter with old state value.',
   function(test) {
     beforeEach();
 
@@ -844,7 +843,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState -  Should join a normal field with findOne.',
+  'ReactiveState -  Should join a normal field with findOne.',
   function(test) {
     beforeEach();
 
@@ -876,7 +875,7 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'MeteorFlux - ReactiveState -  Modify should throw if not function.',
+  'ReactiveState -  Modify should throw if not function.',
   function(test) {
     beforeEach();
 
@@ -886,9 +885,58 @@ Tinytest.add(
   }
 );
 
+Tinytest.add(
+  'ReactiveState -  Should accept other not plain objects.',
+  function(test) {
+    beforeEach();
+
+    var SomeClass = function() {
+      this.prop = 'prop!';
+    };
+
+    reactiveState.modify('instance', (state = new SomeClass()) => {
+      return state;
+    });
+
+    test.equal(reactiveState.get('instance').prop, 'prop!');
+    test.equal(reactiveState.get('instance.prop'), 'prop!');
+    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate),
+      'prop!');
+  }
+);
+
+Tinytest.add(
+  'ReactiveState -  Should accept other not plain objects and mix them.',
+  function(test) {
+    beforeEach();
+
+    var SomeClass = function() {
+      this.prop = 'prop!';
+    };
+
+    reactiveState.modify('instance', (state = new SomeClass()) => {
+      return state;
+    });
+
+    reactiveState.modify('instance.otherProp', (state = 'other prop!') => {
+      return state;
+    });
+
+    test.equal(reactiveState.get('instance').prop, 'prop!');
+    test.equal(reactiveState.get('instance.prop'), 'prop!');
+    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate),
+      'prop!');
+
+    test.equal(reactiveState.get('instance').otherProp, 'other prop!');
+    test.equal(reactiveState.get('instance.otherProp'), 'other prop!');
+    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate2),
+      'other prop!');
+  }
+);
+
 // Won't fix for now, until we see if this is really important.
 // Tinytest.add(
-//   'MeteorFlux - ReactiveState -  Should stop a computation not used anymore.',
+//   'ReactiveState -  Should stop a computation not used anymore.',
 //   function(test) {
 //     beforeEach();
 //

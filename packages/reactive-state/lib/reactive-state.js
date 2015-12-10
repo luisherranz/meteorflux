@@ -10,6 +10,12 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
     // Object to store all the dependencies.
     self._deps = { children: {}, dep: new Tracker.Dependency() };
+
+    // Function to check if something is an object but not an array.
+    self._isObject = Match.Where(obj => {
+      return (obj && typeof obj === 'object' &&
+        obj.constructor.toString().indexOf('Array') === -1);
+    });
   }
 
   // This function gets a keypath and checks if its a string like "author.name"
@@ -136,7 +142,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
         // In the case that there is a previous object and the new value is
         // undefined instead of an object, do nothing.
-        if ((newObj === undefined) && Match.test(oldObj, Object)) {
+        if ((newObj === undefined) && Match.test(oldObj, self._isObject)) {
           return;
         } else if (!_.isEqual(oldObj[key], newObj[key])) {
 
@@ -145,16 +151,16 @@ MeteorFlux.ReactiveState = class ReactiveState {
           self._changeDep(keyPath);
 
           // Check if it is an object
-          if (Match.test(newObj[key], Object)) {
+          if (Match.test(newObj[key], self._isObject)) {
 
             // Both are objects, use _changeObj again.
-            if (!Match.test(oldObj[key], Object)) {
+            if (!Match.test(oldObj[key], self._isObject)) {
               oldObj[key] = {};
             }
             self._changeObj(oldObj[key], newObj[key], keyPath);
 
           } else if ((newObj[key] === undefined) &&
-                     (Match.test(oldObj[key], Object))) {
+                     (Match.test(oldObj[key], self._isObject))) {
             // If it's undefined and the old value is a an object, do nothing
             // because maybe it's a function not returning.
             return;
@@ -241,7 +247,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
     let value = self._getValueInPath(keyPath);
 
-    if ((Match.test(value, Object)) && (value.array)) {
+    if ((Match.test(value, self._isObject)) && (value.array)) {
       oldValue = value;
       value = value.array;
       _.extend(value, _.omit(oldValue, 'array'));

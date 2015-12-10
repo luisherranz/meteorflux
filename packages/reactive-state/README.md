@@ -208,6 +208,10 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
+### 1.2.1:
+
+- Allow non-plain-objects to be used stored as well.
+
 ### 1.2.0:
 
 - Add `State.modify()` for Redux-style apps.
