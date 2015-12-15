@@ -10,6 +10,18 @@ _.allKeys = function(obj) {
 // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
 var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
 
+// Helper to know if a javascript object was created from a class (or prototype)
+// with a syntax like 'var instance = new SomeClass();'. It returns false if
+// the object is a plain javascript object.
+var Class = Match.Where(ob => {
+  return (!Match.test(ob, Object) && !Match.test(ob, Array) && _.isObject(ob));
+});
+
+// Function to check if something is an object but not an array.
+var AnyObject = Match.Where(ob => {
+  return (_.isObject(ob) && !Match.test(ob, Array));
+});
+
 MeteorFlux.ReactiveState = class ReactiveState {
   constructor() {
     let self = this;
@@ -22,12 +34,6 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
     // Object to store all the dependencies.
     self._deps = { children: {}, dep: new Tracker.Dependency() };
-
-    // Function to check if something is an object but not an array.
-    self._isObject = Match.Where(obj => {
-      return (obj && typeof obj === 'object' &&
-        obj.constructor.toString().indexOf('Array') === -1);
-    });
   }
 
   // This function gets a keypath and checks if its a string like "author.name"
@@ -73,17 +79,6 @@ MeteorFlux.ReactiveState = class ReactiveState {
       }
     }
     return node;
-  }
-
-  // This function gets a keyPath (array) and a new value and stores it in
-  // AppState.
-  _setValue(keyPath, newValue) {
-    let self = this;
-    let oldValue = self._getValueInPath(keyPath);
-    if (oldValue !== newValue) {
-      self._setValueOnPath(keyPath, newValue);
-      self._changeDep(keyPath);
-    }
   }
 
   // This function gets a keyPath (array) and a value and creates a new object
@@ -144,46 +139,47 @@ MeteorFlux.ReactiveState = class ReactiveState {
   _changeObj(oldObj, newObj, rootKeyPath = []) {
     let self = this;
 
-    _.each(_.without(_.allKeys(newObj), 'constructor'), key => {
-      // We need to clone the array so we don't modify the rootKeyPath and
-      // it is still valid in the next for iteration.
-      let keyPath = [...rootKeyPath, key];
+    if (Match.test)
 
-      // In the case that there is a previous object and the new value is
-      // undefined instead of an object, do nothing.
-      if ((newObj === undefined) && Match.test(oldObj, self._isObject)) {
-        return;
-      } else if (!_.isEqual(oldObj[key], newObj[key])) {
+    for (var key in newObj) {
+      if (newObj.hasOwnProperty(key)) {
 
-        // If they are not equal, the first thing to do it to mark this
-        // keyPath as changed to trigger all the Tracker.autoruns.
-        self._changeDep(keyPath);
+        // We need to clone the array so we don't modify the rootKeyPath and
+        // it is still valid in the next for iteration.
+        var keyPath = [...rootKeyPath];
+        keyPath.push(key);
 
-        // Check if it is an object
-        if (Match.test(newObj[key], self._isObject)) {
-
-          // If oldObj is not an object, make a new one so we can merge both.
-          if (!Match.test(oldObj[key], self._isObject)) {
-            oldObj[key] = {};
-          }
-
-          // Now both are objects, use _changeObj again.
-          self._changeObj(oldObj[key], newObj[key], keyPath);
-
-        } else if ((newObj[key] === undefined) &&
-                   (Match.test(oldObj[key], self._isObject))) {
-          // If it's undefined and the old value is a an object, do nothing
-          // because maybe it's a function not returning.
+        // In the case that there is a previous object and the new value is
+        // undefined instead of an object, do nothing.
+        if ((newObj === undefined) && Match.test(oldObj, AnyObject)) {
           return;
-        } else if (Match.test(newObj[key], Function)) {
-          // If the newObj is a function, we bind it to the newObj
-          oldObj[key] = _.bind(newObj[key], newObj);
-        } else {
-          // If it's not that case, we just overwrite the value.
-          oldObj[key] = newObj[key];
+        } else if (!_.isEqual(oldObj[key], newObj[key])) {
+
+          // If they are not equal, the first thing to do it to mark this
+          // keyPath as changed to trigger all the Tracker.autoruns.
+          self._changeDep(keyPath);
+
+          // Check if it is an object
+          if (Match.test(newObj[key], Object)) {
+
+            // Both are objects, use _changeObj again.
+            if (!Match.test(oldObj[key], Object)) {
+              oldObj[key] = {};
+            }
+            self._changeObj(oldObj[key], newObj[key], keyPath);
+
+          } else if ((newObj[key] === undefined) &&
+                     (Match.test(oldObj[key], AnyObject))) {
+            // If it's undefined and the old value is a an object, do nothing
+            // because maybe it's a function not returning.
+            return;
+          } else {
+            // If it's not that case, we just overwrite the value.
+            oldObj[key] = newObj[key];
+          }
         }
       }
-    });
+    }
   }
 
   // This function takes a path (string) and registers it as a Blaze helper.
@@ -209,8 +205,23 @@ MeteorFlux.ReactiveState = class ReactiveState {
       if ((result) && (typeof result === 'object') &&
           (result.fetch !== undefined)) {
         self._setObject(keyPath, result.fetch());
+      } else if (Match.test(result, Class)) {
+        self._setClass(keyPath, result);
       } else {
         self._setObject(keyPath, result);
+      }
+    });
+  }
+
+  _setClass(keyPath, instance) {
+    let self = this;
+    _.each(_.allKeys(instance), key => {
+      let value = instance[key];
+      let newkeyPath = [...keyPath, key];
+      if (Match.test(value, Function))
+        self._setFunction(newkeyPath, value.bind(instance), instance);
+      else {
+        self._setObject(newkeyPath, value, instance);
       }
     });
   }
@@ -231,11 +242,12 @@ MeteorFlux.ReactiveState = class ReactiveState {
     let self = this;
     keyPath = self._checkKeyPath(keyPath);
 
-    if (Match.test(newValue, Function)) {
+    if (Match.test(newValue, Function))
       self._setFunction(keyPath, newValue);
-    } else {
+    else if (Match.test(newValue, Class))
+      self._setClass(keyPath, newValue);
+    else
       self._setObject(keyPath, newValue);
-    }
   }
 
   // This public method gets a keyPath (string or array) and a new value and
@@ -260,14 +272,11 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
     let value = self._getValueInPath(keyPath);
 
-    if ((Match.test(value, self._isObject)) && (value.array)) {
+    if ((Match.test(value, AnyObject)) && (value.array)) {
       oldValue = value;
       value = value.array;
       _.extend(value, _.omit(oldValue, 'array'));
     }
-
-    if (Match.test(value, Function))
-      value = value();
 
     if (Tracker.active) {
       self._addDep(keyPath, value);

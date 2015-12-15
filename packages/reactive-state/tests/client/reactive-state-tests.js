@@ -950,30 +950,10 @@ Tinytest.add(
       return state;
     });
 
-    test.equal(reactiveState.get('instance').greet(), 'hi!');
+    test.equal(reactiveState.get('instance').greet, 'hi!');
     test.equal(reactiveState.get('instance.greet'), 'hi!');
     test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate3),
       'hi!');
-  }
-);
-
-Tinytest.add(
-  'ReactiveState -  Should allow functions with params in not plain objects.',
-  function(test) {
-    beforeEach();
-
-    var SomeClass = function() {
-      this.prop = 'prop!';
-    };
-    SomeClass.prototype.greet = function(name) {
-      return 'hi ' + name + '!';
-    };
-
-    reactiveState.modify('instance', (state = new SomeClass()) => {
-      return state;
-    });
-
-    test.equal(reactiveState.get('instance').greet('john'), 'hi john!');
   }
 );
 
@@ -993,7 +973,7 @@ Tinytest.add(
       return state;
     });
 
-    test.equal(reactiveState.get('instance').greet(), 'hi john!');
+    test.equal(reactiveState.get('instance').greet, 'hi john!');
     test.equal(reactiveState.get('instance.greet'), 'hi john!');
     test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate3),
       'hi john!');
