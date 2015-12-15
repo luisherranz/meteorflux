@@ -220,6 +220,10 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
+### 1.3.4:
+
+- Allowing non-plain objects and storing them as they are, without messing with their functions. Then, doing some logic on retrieval.
+
 ### 1.3.3:
 
 - Another approach to support non-plain objects.

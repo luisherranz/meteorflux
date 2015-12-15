@@ -906,35 +906,6 @@ Tinytest.add(
 );
 
 Tinytest.add(
-  'ReactiveState -  Should accept other not plain objects and mix them.',
-  function(test) {
-    beforeEach();
-
-    var SomeClass = function() {
-      this.prop = 'prop!';
-    };
-
-    reactiveState.modify('instance', (state = new SomeClass()) => {
-      return state;
-    });
-
-    reactiveState.modify('instance.otherProp', (state = 'other prop!') => {
-      return state;
-    });
-
-    test.equal(reactiveState.get('instance').prop, 'prop!');
-    test.equal(reactiveState.get('instance.prop'), 'prop!');
-    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate),
-      'prop!');
-
-    test.equal(reactiveState.get('instance').otherProp, 'other prop!');
-    test.equal(reactiveState.get('instance.otherProp'), 'other prop!');
-    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate2),
-      'other prop!');
-  }
-);
-
-Tinytest.add(
   'ReactiveState -  Should allow functions inside not plain objects.',
   function(test) {
     beforeEach();
@@ -950,7 +921,7 @@ Tinytest.add(
       return state;
     });
 
-    test.equal(reactiveState.get('instance').greet, 'hi!');
+    test.equal(reactiveState.get('instance').greet(), 'hi!');
     test.equal(reactiveState.get('instance.greet'), 'hi!');
     test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate3),
       'hi!');
@@ -973,9 +944,30 @@ Tinytest.add(
       return state;
     });
 
-    test.equal(reactiveState.get('instance').greet, 'hi john!');
+    test.equal(reactiveState.get('instance').greet(), 'hi john!');
     test.equal(reactiveState.get('instance.greet'), 'hi john!');
     test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate3),
+      'hi john!');
+  }
+);
+
+Tinytest.add(
+  'ReactiveState -  Should allow functions with args in templates.',
+  function(test) {
+    beforeEach();
+
+    var SomeClass = function() {
+      this.greeting = 'hi';
+    };
+    SomeClass.prototype.greet = function(name) {
+      return (this.greeting + ' ' + name + '!');
+    };
+
+    reactiveState.modify('instance', (state = new SomeClass()) => {
+      return state;
+    });
+
+    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate4),
       'hi john!');
   }
 );

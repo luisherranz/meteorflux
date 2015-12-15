@@ -75,7 +75,20 @@ MeteorFlux.ReactiveState = class ReactiveState {
       if ((Match.test(node, Object)) && (keyPath[i] in node)) {
         node = node[keyPath[i]];
       } else {
-        return self._NOTSET;
+        // Value has not been found, let's see if it belongs to a superior
+        // instance.
+        if (Match.test(node, Class)) {
+          let value = node[keyPath[i]];
+          if (Match.test(value, Function))
+            if (!!Blaze.currentView)
+              return value.bind(node);
+            else
+              return value.bind(node)();
+          else
+            return value;
+        } else {
+          return self._NOTSET;
+        }
       }
     }
     return node;
@@ -114,6 +127,19 @@ MeteorFlux.ReactiveState = class ReactiveState {
       currentNode = nextNode;
     }
     return currentNode.dep;
+  }
+
+  // This function takes keyPath (array) and stores the value passed.
+  _setValue(keyPath, value) {
+    let self = this;
+    let node = self._obj;
+    for (var i = 0; i < keyPath.length; i++) {
+      if (i !== keyPath.length - 1)
+        node = node[keyPath[i]] = node[keyPath[i]] || {};
+      else
+        node[keyPath[i]] = value;
+    }
+    self._changeDep(keyPath);
   }
 
   // This function adds a dependency for the keyPath (array). This means that
@@ -215,15 +241,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
   _setClass(keyPath, instance) {
     let self = this;
-    _.each(_.allKeys(instance), key => {
-      let value = instance[key];
-      let newkeyPath = [...keyPath, key];
-      if (Match.test(value, Function))
-        self._setFunction(newkeyPath, value.bind(instance), instance);
-      else {
-        self._setObject(newkeyPath, value, instance);
-      }
-    });
+    self._setValue(keyPath, instance);
   }
 
   // This funciton gets a keyPath (array) and a new value and it creates a new
@@ -233,7 +251,6 @@ MeteorFlux.ReactiveState = class ReactiveState {
     let self = this;
     let newObjFromValue = self._createObjFromValue(keyPath, newValue);
     self._changeObj(self._obj, newObjFromValue);
-    self._registerHelper(keyPath[0]);
   }
 
   // This public method gets a keyPath (string or array) and a new value and
@@ -248,6 +265,8 @@ MeteorFlux.ReactiveState = class ReactiveState {
       self._setClass(keyPath, newValue);
     else
       self._setObject(keyPath, newValue);
+
+    self._registerHelper(keyPath[0]);
   }
 
   // This public method gets a keyPath (string or array) and a new value and
@@ -261,6 +280,8 @@ MeteorFlux.ReactiveState = class ReactiveState {
     } else {
       throw new Error('Invalid modifier function');
     }
+
+    self._registerHelper(keyPath[0]);
   }
 
   // This public method gets a keyPath (string or array) and returns the
@@ -271,12 +292,6 @@ MeteorFlux.ReactiveState = class ReactiveState {
     keyPath = self._checkKeyPath(keyPath);
 
     let value = self._getValueInPath(keyPath);
-
-    if ((Match.test(value, AnyObject)) && (value.array)) {
-      oldValue = value;
-      value = value.array;
-      _.extend(value, _.omit(oldValue, 'array'));
-    }
 
     if (Tracker.active) {
       self._addDep(keyPath, value);
