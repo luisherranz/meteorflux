@@ -220,6 +220,10 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
+### 1.3.3:
+
+- Another approach to support non-plain objects.
+
 ### 1.3.2:
 
 - Fix problem with object.hasOwnProperties. Now using the better `_.allKeys()`;
