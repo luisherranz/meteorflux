@@ -10,14 +10,15 @@ _.allKeys = function(obj) {
 // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
 var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
 
-// Helper to know if a javascript object was created from a class (or prototype)
-// with a syntax like 'var instance = new SomeClass();'. It returns false if
-// the object is a plain javascript object.
+// Match helper to know if a javascript object was created from a class (or
+// prototype) with a syntax like 'var instance = new SomeClass();'. It returns
+// false if the object is a plain javascript object.
 var Class = Match.Where(ob => {
   return (!Match.test(ob, Object) && !Match.test(ob, Array) && _.isObject(ob));
 });
 
-// Function to check if something is an object but not an array.
+// Match helper to check if something is an object but not an array. Any type
+// of object, not just plain objects, so classes included.
 var AnyObject = Match.Where(ob => {
   return (_.isObject(ob) && !Match.test(ob, Array));
 });
@@ -67,31 +68,42 @@ MeteorFlux.ReactiveState = class ReactiveState {
   }
 
   // This function gets a keyPath (array) and returns the value stored in
-  // AppState for it. If is not set yet, it will return the _NOTSET value.
+  // ReactiveState for it. If is not set yet, it will return the _NOTSET value.
   _getValueInPath(keyPath) {
     let self = this;
-    let node = self._obj;
+    let parent = null;
+    let value = self._obj;
+
+    // Check to see if there is a value in self._obj but maintain the parent
+    // in case we have to bind because it is a function.
     for (let i = 0; i < keyPath.length; i++) {
-      if ((Match.test(node, Object)) && (keyPath[i] in node)) {
-        node = node[keyPath[i]];
+      if (Match.test(value, AnyObject) &&
+        _.indexOf(_.allKeys(value), keyPath[i]) !== -1){
+        parent = value;
+        value = value[keyPath[i]];
       } else {
-        // Value has not been found, let's see if it belongs to a superior
-        // instance.
-        if (Match.test(node, Class)) {
-          let value = node[keyPath[i]];
-          if (Match.test(value, Function))
-            if (!!Blaze.currentView)
-              return value.bind(node);
-            else
-              return value.bind(node)();
-          else
-            return value;
-        } else {
-          return self._NOTSET;
-        }
+        // If nothing is found, we return the value of _NOTSET.
+        return self._NOTSET;
       }
     }
-    return node;
+
+    // Now, check if it is a class and has a get value. If it does, then it's
+    // probably some kind of Reactive source. Let's return the result of its
+    // get function.
+    if (Match.test(value, Class) && Match.test(value.get, Function)) {
+      return value.get();
+    // Next thing we check if the value itself is a function. If it is, then
+    // we bind it to its parent to it has access to the correct object.
+    } else if (Match.test(value, Function))
+      // We check if we are on Blaze or not as well. If we are not, we execute
+      // the function, but if we are, we leave Blaze do so.
+      if (!!Blaze.currentView)
+        return value.bind(parent);
+      else
+        return value.bind(parent)();
+    else
+      // If none of the special cases above is true, just return the value.
+      return value;
   }
 
   // This function gets a keyPath (array) and a value and creates a new object
@@ -129,7 +141,8 @@ MeteorFlux.ReactiveState = class ReactiveState {
     return currentNode.dep;
   }
 
-  // This function takes keyPath (array) and stores the value passed.
+  // This function takes keyPath (array) and stores the value passed without
+  // modifying it.
   _setValue(keyPath, value) {
     let self = this;
     let node = self._obj;
@@ -218,9 +231,9 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
   // This function gets a keyPath (array) and a function and puts it in a
   // Tracker computation. The function will be executed and the result will be
-  // stored in the AppState. This means we don't store function, we store the
+  // stored in ReactiveState. This means we don't store function, we store the
   // resulting objects. If the function is reactive and something inside it
-  // changes, this Tracker computation will be run again and AppState will
+  // changes, this Tracker computation will be run again and ReactiveState will
   // be updated with the correct values.
   _setFunction(keyPath, func) {
     let self = this;
@@ -239,12 +252,14 @@ MeteorFlux.ReactiveState = class ReactiveState {
     });
   }
 
+  // This function gets a keyPath (array) and an instance of some class and
+  // stores its value in ReactiveState.
   _setClass(keyPath, instance) {
     let self = this;
     self._setValue(keyPath, instance);
   }
 
-  // This funciton gets a keyPath (array) and a new value and it creates a new
+  // This function gets a keyPath (array) and a new value and it creates a new
   // object with the value and merges it with the old object tree. Then it
   // registers the Blaze helper.
   _setObject(keyPath, newValue) {
@@ -270,7 +285,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
   }
 
   // This public method gets a keyPath (string or array) and a new value and
-  // stores it in the AppState object tree.
+  // stores it in the ReactiveState object tree.
   modify(keyPath, modifier) {
     let self = this;
 
@@ -301,5 +316,5 @@ MeteorFlux.ReactiveState = class ReactiveState {
   }
 };
 
-// Creates a new instance to be exported.
+// Creates a global to be exported.
 ReactiveState = MeteorFlux.ReactiveState;

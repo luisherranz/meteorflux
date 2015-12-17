@@ -952,6 +952,112 @@ Tinytest.add(
 );
 
 Tinytest.add(
+  'ReactiveState -  Should allow classes with several levels.',
+  function(test) {
+    beforeEach();
+
+    var InternaClass = function(name) {
+      this.name = name;
+    };
+    InternaClass.prototype.greet = function() {
+      return 'hi ' + this.name + '!';
+    };
+
+    var SomeClass = function() {
+      this.props = {
+        name: 'john',
+        wife: new InternaClass('marie')
+      };
+    };
+    SomeClass.prototype.greet = function() {
+      return 'hi ' + this.props.name + '!';
+    };
+
+    reactiveState.modify('instance', (state = new SomeClass()) => {
+      return state;
+    });
+
+    test.equal(reactiveState.get('instance.props.name'), 'john');
+    test.equal(reactiveState.get('instance.props').name, 'john');
+    test.equal(reactiveState.get('instance').greet(), 'hi john!');
+    test.equal(reactiveState.get('instance.greet'), 'hi john!');
+
+    test.equal(reactiveState.get('instance.props.wife.name'), 'marie');
+    test.equal(reactiveState.get('instance.props.wife').name, 'marie');
+    test.equal(reactiveState.get('instance.props.wife').greet(), 'hi marie!');
+    test.equal(reactiveState.get('instance.props.wife.greet'), 'hi marie!');
+
+    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate5),
+      'john and marie');
+    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate6),
+      'hi john! and hi marie!');
+  }
+);
+
+
+Tinytest.add(
+  'ReactiveState -  Should allow classes using internal reactivity.',
+  function(test) {
+    beforeEach();
+
+    var InternaClass = function(name) {
+      this.name = new ReactiveVar(name);
+    };
+    InternaClass.prototype.greet = function() {
+      return 'hi ' + this.name.get() + '!';
+    };
+
+    var SomeClass = function() {
+      this.props = {
+        name: new ReactiveVar('john'),
+        wife: new InternaClass('marie')
+      };
+    };
+    SomeClass.prototype.greet = function() {
+      return 'hi ' + this.props.name.get() + '!';
+    };
+
+    reactiveState.modify('instance', (state = new SomeClass()) => {
+      return state;
+    });
+
+    var johnName, johnGreet, wifeName, wifeGreet;
+
+    Tracker.autorun(function() {
+      johnName = reactiveState.get('instance.props.name');
+    });
+
+    Tracker.autorun(function() {
+      johnGreet = reactiveState.get('instance.greet');
+    });
+
+    Tracker.autorun(function() {
+      wifeName = reactiveState.get('instance.props.wife.name');
+    });
+
+    Tracker.autorun(function() {
+      wifeGreet = reactiveState.get('instance.props.wife.greet');
+    });
+
+    test.equal(johnName, 'john');
+    test.equal(johnGreet, 'hi john!');
+    test.equal(wifeName, 'marie');
+    test.equal(wifeGreet, 'hi marie!');
+
+    var instance = reactiveState.get('instance');
+
+    instance.props.name.set('old john');
+    instance.props.wife.name.set('claire');
+
+    Tracker.flush();
+    test.equal(johnName, 'old john');
+    test.equal(johnGreet, 'hi old john!');
+    test.equal(wifeName, 'claire');
+    test.equal(wifeGreet, 'hi claire!');
+  }
+);
+
+Tinytest.add(
   'ReactiveState -  Should allow functions with args in templates.',
   function(test) {
     beforeEach();

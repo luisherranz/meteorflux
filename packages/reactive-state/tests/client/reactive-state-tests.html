@@ -97,3 +97,11 @@ His name is {{post.author.name}} and his age is {{post.author.age}}.
 <template name="reactiveState_instanceTemplate4">
 {{instance.greet "john"}}
 </template>
+
+<template name="reactiveState_instanceTemplate5">
+{{instance.props.name}} and {{instance.props.wife.name}}
+</template>
+
+<template name="reactiveState_instanceTemplate6">
+{{instance.greet}} and {{instance.props.wife.greet}}
+</template>
