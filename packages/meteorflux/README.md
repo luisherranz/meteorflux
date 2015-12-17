@@ -1,6 +1,6 @@
 # MeteorFlux - a reactive Flux framework
 
-[![Build Status](https://travis-ci.org/worona/meteorflux.svg?branch=devel)](https://travis-ci.org/worona/meteorflux)
+[![Build Status](https://travis-ci.org/worona/meteorflux.svg?branch=devel)](https://travis-ci.org/worona/meteorflux) - [![Join the chat at https://gitter.im/worona/meteorflux](https://badges.gitter.im/worona/meteorflux.svg)](https://gitter.im/worona/meteorflux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 *MeteorFlux was created and is actively maintained by [@luisherranz](https://github.com/LuisHerranz) from [@worona](https://github.com/worona).*
 
