@@ -224,7 +224,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
   // This function takes a path (string) and registers it as a Blaze helper.
   _registerHelper(path) {
     let self = this;
-    if Template {
+    if (Template) {
       Template.registerHelper(path, () => {
         return self.get(path);
       });
