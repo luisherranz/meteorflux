@@ -97,7 +97,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
     } else if (Match.test(value, Function))
       // We check if we are on Blaze or not as well. If we are not, we execute
       // the function, but if we are, we leave Blaze do so.
-      if (!!Blaze.currentView)
+      if (Blaze && !!Blaze.currentView)
         return value.bind(parent);
       else
         return value.bind(parent)();
@@ -224,9 +224,11 @@ MeteorFlux.ReactiveState = class ReactiveState {
   // This function takes a path (string) and registers it as a Blaze helper.
   _registerHelper(path) {
     let self = this;
-    Template.registerHelper(path, () => {
-      return self.get(path);
-    });
+    if (Template) {
+      Template.registerHelper(path, () => {
+        return self.get(path);
+      });
+    }
   }
 
   // This function gets a keyPath (array) and a function and puts it in a
