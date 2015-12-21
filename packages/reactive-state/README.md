@@ -220,7 +220,7 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
-### 1.3.6:
+### 1.3.7:
 
 - Make Blaze a weak dependency.
 

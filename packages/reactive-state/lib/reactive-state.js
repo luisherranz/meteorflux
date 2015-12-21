@@ -224,7 +224,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
   // This function takes a path (string) and registers it as a Blaze helper.
   _registerHelper(path) {
     let self = this;
-    if (Template) {
+    if (typeof Template !== 'undefined') {
       Template.registerHelper(path, () => {
         return self.get(path);
       });
@@ -320,3 +320,13 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
 // Creates a global to be exported.
 ReactiveState = MeteorFlux.ReactiveState;
+
+// Get Blaze and Template from window variable. We have to import them this way
+// because Blaze is a weak dependency and it is not imported by Meteor. So this
+// are coming from the tests file.
+Meteor.startup(() => {
+  if ((typeof Blaze === 'undefined') && (window) && (window.Blaze))
+    Blaze = window.Blaze;
+  if ((typeof Template === 'undefined') && (window) && (window.Template))
+    Template = window.Template;
+});

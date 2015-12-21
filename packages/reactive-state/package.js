@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:reactive-state',
-  version: '1.3.6',
+  version: '1.3.7',
   summary: 'ReactiveState is a reactive object to save complex state data.',
   git: 'https://github.com/worona/meteorflux',
   documentation: 'README.md'
@@ -20,11 +20,11 @@ Package.onUse(function(api) {
 });
 
 Package.onTest(function(api) {
+  api.use('tinytest');
   api.use('ecmascript');
   api.use('check');
   api.use('tracker');
   api.use('reactive-var');
-  api.use('tinytest');
   api.use('blaze-html-templates');
   api.use('mongo');
   api.use('meteorflux:reactive-state', 'client');

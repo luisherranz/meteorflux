@@ -1,4 +1,10 @@
 /* jshint -W106 */
+
+// Export Blaze and Template so the package can use it. We have to do this
+// because Blaze is a weak dependency.
+window.Blaze = Blaze;
+window.Template = Template;
+
 let beforeEach = () => { reactiveState = new ReactiveState();
   Blaze._globalHelpers = [];
 };
