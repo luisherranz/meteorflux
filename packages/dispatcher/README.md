@@ -163,6 +163,10 @@ If you need to create an independent dispatcher (i.e. for testing purposes) you 
 ```javascript
 var otherDispatcher = new MeteorFlux.Dispatcher();
 
+// If you want to be able to use a string as the first parameter add this as well:
+otherDispatcher.addDispatchFilter(otherDispatcher._curatePayload);
+otherDispatcher.addRegisterFilter(otherDispatcher._curateCallback);
+
 ```
 
 # Flux concepts and principles
