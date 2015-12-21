@@ -220,6 +220,10 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
+### 1.3.6:
+
+- Make Blaze a weak dependency.
+
 ### 1.3.5:
 
 - Solved some bugs retrieving complex values with non-plain objects.
