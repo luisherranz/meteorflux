@@ -14,7 +14,7 @@ Package.onUse(function(api) {
   api.use('check');
   api.use('underscore');
   api.use('tracker');
-  api.use('blaze-html-templates');
+  api.use('blaze-html-templates', { weak: true });
   api.addFiles('lib/reactive-state.js', 'client');
   api.export('ReactiveState', 'client');
 });
@@ -25,7 +25,7 @@ Package.onTest(function(api) {
   api.use('tracker');
   api.use('reactive-var');
   api.use('tinytest');
-  api.use('blaze-html-templates', {week: true});
+  api.use('blaze-html-templates');
   api.use('mongo');
   api.use('meteorflux:reactive-state', 'client');
   api.addFiles('tests/client/reactive-state-tests.js', 'client');
