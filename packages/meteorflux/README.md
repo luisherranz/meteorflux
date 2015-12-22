@@ -263,6 +263,12 @@ Just add it to your Meteor project using:
 $ meteor add meteorflux:meteorflux
 ```
 
+If you want to use the Blaze helpers and events you need to add the Blaze Utils package as well.
+
+```
+meteor add meteorflux:blaze-utils
+```
+
 ## MeteorFlux API
 
 ### Dispatch(type, payload)
@@ -429,7 +435,7 @@ AfterAction(() => {
 });
 ```
 
-## Blaze Events
+### Blaze Events
 
 If you use Blaze you can dispatch directly from your html.
 
@@ -764,6 +770,10 @@ That way, **Stores** can listen to the `LOGIN_FAILED` and `LOGIN_SUCCEED` events
 Knowing what's happening in **Flux** is important. This framework comes with default console messages each time an **Action** is dispatched. They are `debugOnly` so don't worry, it won't happen in your app once it is on production.
 
 # Changelog
+
+### 1.2.0
+
+- Update to ReactiveState 1.4.0 and remove Blaze events from package.
 
 ### 1.1.10
 
