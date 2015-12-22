@@ -35,6 +35,12 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
     // Object to store all the dependencies.
     self._deps = { children: {}, dep: new Tracker.Dependency() };
+
+    // Array to store the beforeChange callbacks.
+    self._beforeChangeCallbacks = [];
+
+    // Array to store the afterChange callbacks.
+    self._afterChangeCallbacks = [];
   }
 
   // This function gets a keypath and checks if its a string like "author.name"
@@ -97,7 +103,7 @@ MeteorFlux.ReactiveState = class ReactiveState {
     } else if (Match.test(value, Function))
       // We check if we are on Blaze or not as well. If we are not, we execute
       // the function, but if we are, we leave Blaze do so.
-      if (Blaze && !!Blaze.currentView)
+      if ((typeof Blaze !== 'undefined') && (!!Blaze.currentView))
         return value.bind(parent);
       else
         return value.bind(parent)();
@@ -221,16 +227,6 @@ MeteorFlux.ReactiveState = class ReactiveState {
     }
   }
 
-  // This function takes a path (string) and registers it as a Blaze helper.
-  _registerHelper(path) {
-    let self = this;
-    if (typeof Template !== 'undefined') {
-      Template.registerHelper(path, () => {
-        return self.get(path);
-      });
-    }
-  }
-
   // This function gets a keyPath (array) and a function and puts it in a
   // Tracker computation. The function will be executed and the result will be
   // stored in ReactiveState. This means we don't store function, we store the
@@ -271,10 +267,16 @@ MeteorFlux.ReactiveState = class ReactiveState {
   }
 
   // This public method gets a keyPath (string or array) and a new value and
-  // stores it in the AppState object tree.
+  // stores it in the ReactiveState object tree.
   set(keyPath, newValue) {
     let self = this;
     keyPath = self._checkKeyPath(keyPath);
+
+    _.each(self._beforeChangeCallbacks, (func) => {
+      let value = func(keyPath, newValue);
+      if (value !== undefined)
+        newValue = value;
+    });
 
     if (Match.test(newValue, Function))
       self._setFunction(keyPath, newValue);
@@ -283,7 +285,9 @@ MeteorFlux.ReactiveState = class ReactiveState {
     else
       self._setObject(keyPath, newValue);
 
-    self._registerHelper(keyPath[0]);
+    _.each(self._afterChangeCallbacks, (func) => {
+      func(keyPath, newValue);
+    });
   }
 
   // This public method gets a keyPath (string or array) and a new value and
@@ -292,13 +296,27 @@ MeteorFlux.ReactiveState = class ReactiveState {
     let self = this;
 
     if (Match.test(modifier, Function)) {
-      keyPath = self._checkKeyPath(keyPath);
-      self._setFunction(keyPath, modifier);
+      self.set(keyPath, modifier);
     } else {
       throw new Error('Invalid modifier function');
     }
+  }
 
-    self._registerHelper(keyPath[0]);
+  // This is a public hook to add a callback which will be called before any
+  // change is triggered. The callback will receive the keyPath (in array
+  // format) and the new value. If it returns something different than undefined
+  // the new value will be overwriten.
+  beforeChange(cb) {
+    let self = this;
+    self._beforeChangeCallbacks.push(cb);
+  }
+
+  // This is a public hook to add a callback which will be called after any
+  // change is triggered. The callback will receive the keyPath (in array
+  // format) and the new value.
+  afterChange(cb) {
+    let self = this;
+    self._afterChangeCallbacks.push(cb);
   }
 
   // This public method gets a keyPath (string or array) and returns the
@@ -320,13 +338,3 @@ MeteorFlux.ReactiveState = class ReactiveState {
 
 // Creates a global to be exported.
 ReactiveState = MeteorFlux.ReactiveState;
-
-// Get Blaze and Template from window variable. We have to import them this way
-// because Blaze is a weak dependency and it is not imported by Meteor. So this
-// are coming from the tests file.
-Meteor.startup(() => {
-  if ((typeof Blaze === 'undefined') && (window) && (window.Blaze))
-    Blaze = window.Blaze;
-  if ((typeof Template === 'undefined') && (window) && (window.Template))
-    Template = window.Template;
-});

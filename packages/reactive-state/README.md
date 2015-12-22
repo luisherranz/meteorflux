@@ -149,7 +149,19 @@ State.get('user.greet') // => hi john!
 
 #### Blaze Global Helpers
 
-You can retrieve any value from any Blaze template.
+If you want to use the global helpers you can add this hook to your ReactiveState instances:
+
+
+```javascript
+State = new ReactiveState();
+State.afterChange((keyPath) => {
+  Template.registerHelper(keyPath[0], () => {
+    return this.get.bind(this, keyPath[0]);
+  });
+});
+```
+
+Then you can retrieve any value from any Blaze template.
 
 ```html
 <template name='VideoPlayerList'>
@@ -176,9 +188,6 @@ You can retrieve any value from any Blaze template.
 Be aware that if you create different ReactiveState objects, you have to namespace them or they will collide in Blaze. For example:
 
 ```javascript
-var state1 = new ReactiveState();
-var state2 = new ReactiveState();
-
 state1.set('something', 1);
 state2.set('something', 2);
 ```
@@ -190,9 +199,6 @@ The value `something` in Blaze will get the value added in the last place, in th
 
 You can namespace ReactiveStates like this:
 ```javascript
-var state1 = new ReactiveState();
-var state2 = new ReactiveState();
-
 state1.set('state1.something', 1);
 state2.set('state2.something', 2);
 ```
@@ -202,23 +208,42 @@ state2.set('state2.something', 2);
 <span>{{state2.something}}</span>
 ```
 
+## beforeChange and afterChange hooks
+
+You can use `State.beforeChange(func)` and `State.afterChange(func)` to add callbacks when something is changed in State. The callback has two parameters, a keyPath (in array format) and the new value.
+
+```javascript
+State.beforeChange((keyPath, newValue) => {
+  if (keyPath[0].startsWith('int'))
+    return parseInt(newValue);
+});
+
+State.afterChange((keyPath, newValue) => {
+  console.log(keyPath.join(', ') + ' has changed to ', newValue);
+});
+```
+
 ## Isn't this like Session?
 
 No, it's not. Session was not designed for this purpose. If you store complex objects in it, it will erase the previous object (instead of merging it) and it will invalidate everything and cause a lot of re-renders. Besides, you can't store functions or Mongo cursors.
 
 ## Possible improvements
 
-This are some ideas to improve **AppState**. PRs are welcomed.
+This are some ideas to improve **ReactiveState**. PRs are welcomed.
 
 * [ ] **Hot Code push:** survive to hot code pushes.
 * [ ] **Store offline:** so the next time the user comes back to your app everything is exactly as it was.
 * [ ] **Store in the url:** some of the values only. Good if the users shares the url with somebody and your app should now some of the user state.
 * [ ] **Time Machine:** undo/redo changes in development. Probably using [Constellation](https://atmospherejs.com/babrahams/constellation) for the UI. Pretty much like the Time Machine of Redux.
-* [ ] **React support:** more than react support, maybe get rid of Blaze helpers if the app doesn't use Blaze.
+* [x] Get rid of Blaze helpers if the app doesn't use Blaze.
 
 Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
+
+### 1.4.0:
+
+- Remove Blaze dependency and add hooks.
 
 ### 1.3.7:
 

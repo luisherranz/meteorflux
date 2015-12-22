@@ -1,14 +1,9 @@
 /* jshint -W106 */
 
-// Export Blaze and Template so the package can use it. We have to do this
-// because Blaze is a weak dependency.
-window.Blaze = Blaze;
-window.Template = Template;
-
-let beforeEach = () => { reactiveState = new ReactiveState();
-  Blaze._globalHelpers = [];
+var reactiveState;
+var beforeEach = () => {
+  reactiveState = new ReactiveState();
 };
-
 
 Tinytest.add('ReactiveState - Test internal _checkKeyPath function',
   function (test) {
@@ -181,9 +176,6 @@ Tinytest.add(
   function(test) {
     beforeEach();
     test.equal(reactiveState.get('undefined'), reactiveState._NOTSET);
-    test.equal(Blaze.toHTML(Template.reactiveState_undefinedTemplate),
-      'Variable is false.'
-    );
   }
 );
 
@@ -201,9 +193,6 @@ Tinytest.add(
     Tracker.flush();
 
     test.equal(text, 'hi from reactivity!');
-    test.equal(Blaze.toHTML(Template.reactiveState_stringTemplate),
-      'hi from reactivity! inside a template.'
-    );
   }
 );
 
@@ -213,9 +202,6 @@ Tinytest.add(
   function(test) {
     beforeEach();
     test.equal(reactiveState.get('nested.undefined'), undefined);
-    test.equal(Blaze.toHTML(Template.reactiveState_nestedUndefinedTemplate),
-      'Variable is false.'
-    );
   }
 );
 
@@ -226,9 +212,6 @@ Tinytest.add(
     beforeEach();
     reactiveState.set('string', 'I am a string');
     test.equal(reactiveState.get('string'), 'I am a string');
-    test.equal(Blaze.toHTML(Template.reactiveState_stringTemplate),
-      'I am a string inside a template.'
-    );
   }
 );
 
@@ -239,9 +222,6 @@ Tinytest.add(
     beforeEach();
     reactiveState.set('nested.string', 'I am a nested string');
     test.equal(reactiveState.get('nested.string'), 'I am a nested string');
-    test.equal(Blaze.toHTML(Template.reactiveState_nestedStringTemplate),
-      'I am a nested string inside a template.'
-    );
   }
 );
 
@@ -254,13 +234,9 @@ Tinytest.add(
     Tracker.autorun(function(){
       text = reactiveState.get('string');
     });
-    test.equal(Blaze.toHTML(Template.reactiveState_stringTemplate), '');
     reactiveState.set('string', 'I am a string');
     Tracker.flush();
     test.equal(text, 'I am a string');
-    test.equal(Blaze.toHTML(Template.reactiveState_stringTemplate),
-      'I am a string inside a template.'
-    );
   }
 );
 
@@ -269,12 +245,8 @@ Tinytest.add(
 
   function(test) {
     beforeEach();
-    test.equal(Blaze.toHTML(Template.reactiveState_stringTemplate2), '');
     reactiveState.set('string2', 'I am a string');
     Tracker.flush();
-    test.equal(Blaze.toHTML(Template.reactiveState_stringTemplate2),
-      'I am a string inside a template.'
-    );
   }
 );
 
@@ -290,9 +262,6 @@ Tinytest.add(
     reactiveState.set('nested.string', 'I am a nested string');
     Tracker.flush();
     test.equal(text, 'I am a nested string');
-    test.equal(Blaze.toHTML(Template.reactiveState_nestedStringTemplate),
-      'I am a nested string inside a template.'
-    );
   }
 );
 
@@ -303,9 +272,6 @@ Tinytest.add(
     beforeEach();
     reactiveState.set('number', 123);
     test.equal(reactiveState.get('number'), 123);
-    test.equal(Blaze.toHTML(Template.reactiveState_numberTemplate),
-      'This is 123.'
-    );
   }
 );
 
@@ -321,9 +287,6 @@ Tinytest.add(
     reactiveState.set('number', 123);
     Tracker.flush();
     test.equal(number, 123);
-    test.equal(Blaze.toHTML(Template.reactiveState_numberTemplate),
-      'This is 123.'
-    );
   }
 );
 
@@ -334,9 +297,6 @@ Tinytest.add(
     beforeEach();
     reactiveState.set('boolean', true);
     test.equal(reactiveState.get('boolean'), true);
-    test.equal(Blaze.toHTML(Template.reactiveState_booleanTemplate),
-      'This is true.'
-    );
   }
 );
 
@@ -352,9 +312,6 @@ Tinytest.add(
     reactiveState.set('boolean', true);
     Tracker.flush();
     test.equal(boolean, true);
-    test.equal(Blaze.toHTML(Template.reactiveState_booleanTemplate),
-      'This is true.'
-    );
   }
 );
 
@@ -367,12 +324,6 @@ Tinytest.add(
     var author = reactiveState.get('author');
     test.equal(author.name, 'John');
     test.equal(reactiveState.get('author.name'), 'John');
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate),
-      'His name is John.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate2),
-      'His name is John.'
-    );
   }
 );
 
@@ -382,9 +333,6 @@ Tinytest.add(
   function(test) {
     beforeEach();
     reactiveState.set('author', { name: 'John' });
-    test.equal(Blaze.toHTML(Template.reactiveState_authorNestedTemplate),
-      'His name is John.'
-    );
   }
 );
 
@@ -404,12 +352,6 @@ Tinytest.add(
     Tracker.flush();
     test.equal(author.name, 'John');
     test.equal(authorName, 'John');
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate),
-      'His name is John.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate2),
-      'His name is John.'
-    );
   }
 );
 
@@ -424,12 +366,6 @@ Tinytest.add(
     var author = reactiveState.get('author');
     test.equal(author.name, 'John');
     test.equal(reactiveState.get('author.name'), 'John');
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate),
-      'His name is John.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate2),
-      'His name is John.'
-    );
   }
 );
 
@@ -451,12 +387,6 @@ Tinytest.add(
     Tracker.flush();
     test.equal(author.name, 'John');
     test.equal(reactiveState.get('author.name'), 'John');
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate),
-      'His name is John.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate2),
-      'His name is John.'
-    );
   }
 );
 
@@ -472,12 +402,6 @@ Tinytest.add(
     test.equal(author.age, 12);
     test.equal(reactiveState.get('author.name'), 'John');
     test.equal(reactiveState.get('author.age'), 12);
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate3),
-      'His name is John and his age is 12.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate4),
-      'His name is John and his age is 12.'
-    );
   }
 );
 
@@ -505,12 +429,6 @@ Tinytest.add(
     test.equal(age, 12);
     test.equal(reactiveState.get('author.name'), 'John');
     test.equal(reactiveState.get('author.age'), 12);
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate3),
-      'His name is John and his age is 12.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate4),
-      'His name is John and his age is 12.'
-    );
   }
 );
 
@@ -526,12 +444,6 @@ Tinytest.add(
     test.equal(author.age, 12);
     test.equal(reactiveState.get('author.name'), 'John');
     test.equal(reactiveState.get('author.age'), 12);
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate3),
-      'His name is John and his age is 12.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate4),
-      'His name is John and his age is 12.'
-    );
   }
 );
 
@@ -551,12 +463,6 @@ Tinytest.add(
     test.equal(author.age, 12);
     test.equal(reactiveState.get('author.name'), 'John');
     test.equal(reactiveState.get('author.age'), 12);
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate3),
-      'His name is John and his age is 12.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate4),
-      'His name is John and his age is 12.'
-    );
   }
 );
 
@@ -574,12 +480,6 @@ Tinytest.add(
     test.equal(author.age, 12);
     test.equal(reactiveState.get('author.name'), 'John');
     test.equal(reactiveState.get('author.age'), 12);
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate3),
-      'His name is John and his age is 12.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate4),
-      'His name is John and his age is 12.'
-    );
   }
 );
 
@@ -595,12 +495,6 @@ Tinytest.add(
     var post = reactiveState.get('post');
     test.equal(post.author.name, 'John');
     test.equal(reactiveState.get('post.author.name'), 'John');
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate5),
-      'His name is John.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate6),
-      'His name is John.'
-    );
   }
 );
 
@@ -620,12 +514,6 @@ Tinytest.add(
     test.equal(post.author.age, 12);
     test.equal(reactiveState.get('post.author.name'), 'John');
     test.equal(reactiveState.get('post.author.age'), 12 );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate7),
-      'His name is John and his age is 12.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_authorTemplate8),
-      'His name is John and his age is 12.'
-    );
   }
 );
 
@@ -638,9 +526,6 @@ Tinytest.add(
     var posts = reactiveState.get('posts');
     test.equal(posts[0].title, 'Post 1');
     test.equal(posts[1].title, 'Post 2');
-    test.equal(Blaze.toHTML(Template.reactiveState_postTemplate1),
-      'Post title is Post 1. Post title is Post 2. '
-    );
   }
 );
 
@@ -658,12 +543,6 @@ Tinytest.add(
     test.equal(post.title, 'Post 1');
     test.equal(post.url, 'http://blog.com');
     test.equal(post.isReady, true);
-    test.equal(Blaze.toHTML(Template.reactiveState_postTemplate2),
-      'Post title is Post 1 and url is http://blog.com.'
-    );
-    test.equal(Blaze.toHTML(Template.reactiveState_postTemplate3),
-      'Post title is Post 1 and url is http://blog.com.'
-    );
   }
 );
 
@@ -688,10 +567,6 @@ Tinytest.add(
     test.equal(posts[1].title, 'Post 2');
     test.equal(posts[1].url, 'http://blog2.com');
     test.equal(reactiveState.get('posts.isReady'), true);
-    test.equal(Blaze.toHTML(Template.reactiveState_postTemplate4),
-      'Post title is Post 1 and url is http://blog.com. ' +
-      'Post title is Post 2 and url is http://blog2.com. '
-    );
   }
 );
 
@@ -721,10 +596,6 @@ Tinytest.add(
     test.equal(posts[1].title, 'Post 2');
     test.equal(posts[1].url, 'http://blog2.com');
     test.equal(reactiveState.get('posts.isReady'), true);
-    test.equal(Blaze.toHTML(Template.reactiveState_postTemplate4),
-      'Post title is Post 1 and url is http://blog.com. ' +
-      'Post title is Post 2 and url is http://blog2.com. '
-    );
   }
 );
 
@@ -755,10 +626,6 @@ Tinytest.add(
     test.equal(posts[1].title, 'Post 2');
     test.equal(posts[1].url, 'http://blog2.com');
     test.equal(reactiveState.get('posts.isReady'), true);
-    test.equal(Blaze.toHTML(Template.reactiveState_postTemplate4),
-      'Post title is Post 1 and url is http://blog.com. ' +
-      'Post title is Post 2 and url is http://blog2.com. '
-    );
   }
 );
 
@@ -906,8 +773,6 @@ Tinytest.add(
 
     test.equal(reactiveState.get('instance').prop, 'prop!');
     test.equal(reactiveState.get('instance.prop'), 'prop!');
-    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate),
-      'prop!');
   }
 );
 
@@ -929,8 +794,6 @@ Tinytest.add(
 
     test.equal(reactiveState.get('instance').greet(), 'hi!');
     test.equal(reactiveState.get('instance.greet'), 'hi!');
-    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate3),
-      'hi!');
   }
 );
 
@@ -952,8 +815,6 @@ Tinytest.add(
 
     test.equal(reactiveState.get('instance').greet(), 'hi john!');
     test.equal(reactiveState.get('instance.greet'), 'hi john!');
-    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate3),
-      'hi john!');
   }
 );
 
@@ -992,11 +853,6 @@ Tinytest.add(
     test.equal(reactiveState.get('instance.props.wife').name, 'marie');
     test.equal(reactiveState.get('instance.props.wife').greet(), 'hi marie!');
     test.equal(reactiveState.get('instance.props.wife.greet'), 'hi marie!');
-
-    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate5),
-      'john and marie');
-    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate6),
-      'hi john! and hi marie!');
   }
 );
 
@@ -1078,9 +934,6 @@ Tinytest.add(
     reactiveState.modify('instance', (state = new SomeClass()) => {
       return state;
     });
-
-    test.equal(Blaze.toHTML(Template.reactiveState_instanceTemplate4),
-      'hi john!');
   }
 );
 
