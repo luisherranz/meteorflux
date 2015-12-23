@@ -771,7 +771,7 @@ Knowing what's happening in **Flux** is important. This framework comes with def
 
 # Changelog
 
-### 1.2.1
+### 1.2.2
 
 - Testing with queueing actions instead of throwing errors.
 

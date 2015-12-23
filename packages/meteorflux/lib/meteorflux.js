@@ -80,7 +80,6 @@ MeteorFlux.MF = class MF {
 
     // Throw if it's already dispatching.
     if (self.isDispatching()) {
-      debugger;
       self._queuedActions.push(arguments);
     } else {
       // Populate payload.
