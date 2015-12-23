@@ -3,7 +3,7 @@ Package.describe({
   version: '1.0.0',
   summary: 'Blaze helpers for both MeteorFlux and ReactiveState',
   git: 'https://github.com/worona/meteorflux',
-  documentation: 'README.md'
+  documentation: null
 });
 
 Package.onUse(function(api) {

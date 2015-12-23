@@ -771,6 +771,10 @@ Knowing what's happening in **Flux** is important. This framework comes with def
 
 # Changelog
 
+### 1.2.1
+
+- Testing with queueing actions instead of throwing errors.
+
 ### 1.2.0
 
 - Update to ReactiveState 1.4.0 and remove Blaze events from package.

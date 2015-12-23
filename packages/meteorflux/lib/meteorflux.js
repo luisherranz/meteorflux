@@ -80,71 +80,68 @@ MeteorFlux.MF = class MF {
 
     // Throw if it's already dispatching.
     if (self.isDispatching()) {
-      let newActionType = Match.test(arguments[0], String) ?
-        arguments[0] : arguments[0].type;
-      throw new Error('Cannot dispatch "' + newActionType +
-        '" while dispatching "' + self._ActionType() + '".');
-    }
-
-    // Populate payload.
-    if (Match.test(arguments[0], String)) {
-      payload = arguments[1] || {};
-      payload.type = arguments[0];
+      debugger;
+      self._queuedActions.push(arguments);
     } else {
-      payload = arguments[0] || {};
-    }
-
-    // Filter the dispatch.
-    _.each(self._filterFuncs, func => {
-      if (payload !== false) {
-        Tracker.nonreactive(() => {
-          payload = func(payload);
-        });
+      // Populate payload.
+      if (Match.test(arguments[0], String)) {
+        payload = arguments[1] || {};
+        payload.type = arguments[0];
+      } else {
+        payload = arguments[0] || {};
       }
-    });
 
-    // Cancel dispatch if payload is false.
-    if (payload === false)
-      return self;
+      // Filter the dispatch.
+      _.each(self._filterFuncs, func => {
+        if (payload !== false) {
+          Tracker.nonreactive(() => {
+            payload = func(payload);
+          });
+        }
+      });
 
-    // Populate action.
-    self._actionType = payload.type;
-    self._populatePayload(payload);
+      // Cancel dispatch if payload is false.
+      if (payload === false)
+        return self;
 
-    // Start Dispatching
-    self._isDispatching = true;
+      // Populate action.
+      self._actionType = payload.type;
+      self._populatePayload(payload);
 
-    // First, do the Register functions.
-    self._phase = 'Register';
-    _.each(self._registerFuncs, func => {
-      Tracker.nonreactive(func);
-    });
+      // Start Dispatching
+      self._isDispatching = true;
 
-    // Then, do the reactive functions. Just set the Dependency to changed so
-    // they are invalidated by Tracker.
-    self._phase = 'Reactive';
-    self._actionDep.changed();
-
-    // Finally, do the AfterAction functions. Use a Tracker.afterFlush so they
-    // are executed after the reactive functions.
-    Tracker.afterFlush(() => {
-      self._phase = 'AfterAction';
-      _.each(self._afterActionFuncs, func => {
+      // First, do the Register functions.
+      self._phase = 'Register';
+      _.each(self._registerFuncs, func => {
         Tracker.nonreactive(func);
       });
 
-      // End dispatching
-      self._isDispatching = false;
-      self._phase = 'Idle';
+      // Then, do the reactive functions. Just set the Dependency to changed so
+      // they are invalidated by Tracker.
+      self._phase = 'Reactive';
+      self._actionDep.changed();
 
-      // See if there are queueded actions
-      if (self._queuedActions.length > 0) {
-        let args = self._queuedActions[0];
-        self._queuedActions.shift();
-        self.Dispatch.apply(self, args);
-      }
-    });
+      // Finally, do the AfterAction functions. Use a Tracker.afterFlush so they
+      // are executed after the reactive functions.
+      Tracker.afterFlush(() => {
+        self._phase = 'AfterAction';
+        _.each(self._afterActionFuncs, func => {
+          Tracker.nonreactive(func);
+        });
 
+        // End dispatching
+        self._isDispatching = false;
+        self._phase = 'Idle';
+
+        // See if there are queueded actions
+        if (self._queuedActions.length > 0) {
+          let args = self._queuedActions[0];
+          self._queuedActions.shift();
+          self.Dispatch.apply(self, args);
+        }
+      });
+    }
     return self;
   }
 

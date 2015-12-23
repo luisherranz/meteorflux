@@ -98,17 +98,28 @@ Tinytest.add('MeteorFlux - Register function should not be reactive',
   }
 );
 
-Tinytest.add('MeteorFlux - Should throw if dispatch while dispatching',
+Tinytest.add('MeteorFlux - Should queue a dispatch if is dispatch',
   function (test) {
     beforeEach();
 
+    let text = '';
+
     Register(() => {
-      Dispatch('OTHER_THING_HAPPENED');
+      if (Action.is('SOMETHING_HAPPENED')) {
+        text = text + 'hi ';
+        Dispatch('OTHER_THING_HAPPENED');
+      }
     });
 
-    test.throws(() => { Dispatch('SOMETHING_HAPPENED'); },
-      'Cannot dispatch "OTHER_THING_HAPPENED" while dispatching ' +
-      '"SOMETHING_HAPPENED".');
+    Register(() => {
+      if (Action.is('SOMETHING_HAPPENED'))
+        text = text + 'john!';
+    });
+
+    Dispatch('SOMETHING_HAPPENED');
+    Tracker.flush();
+
+    test.equal(text, 'hi john!');
   }
 );
 
