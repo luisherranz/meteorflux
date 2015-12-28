@@ -19,7 +19,7 @@ Package.onUse(function(api) {
   api.imply('meteorflux:namespace@1.0.0'); // Exports MeteorFlux
   api.use('meteorflux:reactive-state@1.4.0');
 
-  api.addFiles('lib/meteorflux.js', 'client');
+  api.addFiles('lib/meteorflux.js');
 
   api.export('Dispatch');
   api.export('Action');
@@ -34,5 +34,5 @@ Package.onTest(function(api) {
   api.use('reactive-var');
   api.use('tracker');
   api.use('meteorflux:meteorflux');
-  api.addFiles('tests/meteorflux-tests.js', 'client');
+  api.addFiles('tests/meteorflux-tests.js');
 });
