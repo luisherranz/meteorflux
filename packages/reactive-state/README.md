@@ -241,6 +241,10 @@ Ideas welcomed as well. Open issues to discuss. ;)
 
 ## Changelog
 
+### 1.5.0:
+
+- Make ReactiveState available on the server for SSR. Please, open an issue if something doesn't work as expected.
+
 ### 1.4.0:
 
 - Remove Blaze dependency and add hooks.
