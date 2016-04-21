@@ -641,3 +641,31 @@ Tinytest.add(
       'hi john!');
   }
 );
+
+Tinytest.add(
+  'Blaze Utils -  Should change when properties of objects change.',
+  function(test) {
+    beforeEach();
+
+    reactiveState.modify('Variables', (state = {a:0,b:0}) => {
+      let actionType=Action.type();
+      if (actionType=="INCR_A") {
+        state.a+=1;
+      } else if (actionType=="INCR_B") {
+        state.b+=1;
+      }
+      return state;
+    });
+
+    test.equal(Blaze.toHTML(Template.reactiveState_propertiesTemplate1), '0 and 0.');
+
+    Dispatch("INCR_A");
+    Tracker.flush();
+    test.equal(Blaze.toHTML(Template.reactiveState_propertiesTemplate1), '1 and 0.');
+
+    Dispatch("INCR_A");
+    Dispatch("INCR_B");
+    Tracker.flush();
+    test.equal(Blaze.toHTML(Template.reactiveState_propertiesTemplate1), '2 and 1.');
+  }
+);
